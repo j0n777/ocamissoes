@@ -2,7 +2,7 @@ import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { easeInOut, easeOut, lerp, progress } from "../lib/anim";
 import { EndCard, EraTag, Label, LUZ, PALHA, URUCUM, Watermark } from "../lib/brand";
 import { Figure, HOLD, KNEEL, LOOK_UP, mixPose, type Pose, STAND, walk } from "../lib/figure";
-import { BoilDef, Grain, Particles, Portal, Vignette } from "../lib/fx";
+import { Grain, Particles, Portal, Vignette } from "../lib/fx";
 import { Music, Sfx, TRAVESSIA_TURN } from "../lib/sound";
 import { CircuitRoots, DataMotes, GlowDef, HoloPanel, Satellite } from "../lib/tech";
 import { type Cam, Hills, Oca, Pleiades, Sprout, Stage, Stars } from "../lib/world";
@@ -60,7 +60,6 @@ const Antes = ({ f }: { f: number }) => {
     <Stage
       cam={cam}
       era="antes"
-      defs={<BoilDef frame={f} />}
       overlay={
         <>
           <EraTag frame={f} text="HÁ SÉCULOS" accent={URUCUM} />
@@ -80,7 +79,7 @@ const Antes = ({ f }: { f: number }) => {
       <Stars frame={f} />
       <Pleiades x={STARS_AT[0]} y={STARS_AT[1]} frame={f} glow={easeOut(progress(f, 70, 30))} link={easeOut(progress(f, 90, 40))} />
       <Hills ground={GROUND} era="antes" />
-      <g filter="url(#boil)">
+      <g>
         <Oca x={900} ground={GROUND} w={320} h={210} />
         {SEEDS.map((x, i) => (
           <Sprout key={x} x={x} ground={GROUND} grow={progress(f, 190 + i * 14, 50)} size={1.5} />

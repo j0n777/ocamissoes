@@ -49,6 +49,12 @@ Regras para todo vídeo parecer da OCA, qualquer que seja o formato. Na dúvida,
 - Antecipação de 2 a 4 quadros antes de um gesto; `settle` nos pousos.
 - Um detalhe secundário por cena: vaga-lumes, poeira de terra, brasas, dados subindo. Somem em até 1,5 s.
 - Determinismo: tudo é função do quadro; variedade com `hash01`, nunca `Math.random()`.
+- **Nada de tremor.** No celular, tremor parece erro de render, cansa o olho e piora a recompressão do Instagram (ruído que muda a cada quadro come o bitrate e vira borrão). Então:
+  - `Grain` é fixo (a textura de papel não se mexe); `animated` só num momento de "filme antigo", curto;
+  - `BoilDef` (traço vibrando) nunca na cena inteira: no máximo um elemento, por menos de 1 s, com `scale` 2 a 3, para lembrança ou sonho;
+  - brilhos e cintilações lentos (ciclo de 20 quadros ou mais) e de pouca amplitude;
+  - movimento de câmera sempre suave (`easeInOut`), nunca chacoalhado.
+- O que dá vida sem tremer: personagens que respiram e andam, objetos que entram com `settle`, partículas lentas, um push-in de câmera.
 
 ## Texto
 
@@ -61,9 +67,9 @@ Regras para todo vídeo parecer da OCA, qualquer que seja o formato. Na dúvida,
 
 ## Efeitos (de outros projetos, ver `references/tecnicas.md` no repo)
 
-- `Grain`: textura de papel/argila sobre tudo (opacidade 0,08 a 0,1).
+- `Grain`: textura de papel/argila fixa sobre tudo (opacidade 0,06 a 0,08).
 - `Vignette`: bordas escuras suaves.
-- `BoilDef`: traço "desenhado à mão" no "antes" (desligue em pausas longas).
+- `BoilDef`: traço vibrando "desenhado à mão". Só um elemento, menos de 1 s (lembrança, sonho). Nunca a cena toda.
 - `Portal`: o "o" do logo como íris entre eras. É a transição da marca; use uma vez por vídeo.
 - `Particles`: `vagalume` e `brasa` no "antes", `dados` no "hoje".
 - `GlowDef`: brilho só em elementos de luz.

@@ -124,3 +124,76 @@ export const DataMotes = ({ x, y, frame, start, count = 16, spread = 200 }: { x:
     </g>
   );
 };
+
+// A phone seen big (close-up): screen with a header bar and content rows.
+export const Celular = ({ x, y, size = 1, t = 1, glow = 0.8 }: { x: number; y: number; size?: number; t?: number; glow?: number }) => {
+  const w = 220 * size, h = 420 * size;
+  return (
+    <g>
+      <rect x={x - w / 2} y={y - h / 2} width={w} height={h} rx={28 * size} fill={NOITE} stroke={CREME} strokeWidth={8} />
+      <rect x={x - w / 2 + 16 * size} y={y - h / 2 + 40 * size} width={w - 32 * size} height={h - 80 * size} rx={10 * size} fill={LUZ} opacity={0.12 + 0.1 * glow} />
+      <rect x={x - w / 2 + 30 * size} y={y - h / 2 + 60 * size} width={(w - 60 * size) * clamp01(t * 2)} height={20 * size} fill={LUZ} opacity={0.9} />
+      {[0, 1, 2, 3].map((i) => (
+        <rect key={i} x={x - w / 2 + 30 * size} y={y - h / 2 + (110 + i * 50) * size} width={(w - 60 * size) * (0.6 + 0.4 * ((i * 37) % 10) / 10) * clamp01(t * 3 - i * 0.4)} height={14 * size} rx={4} fill={CREME} opacity={0.55} />
+      ))}
+    </g>
+  );
+};
+
+// Soil sensor: a stake in the ground with an antenna and signal arcs.
+export const Sensor = ({ x, ground, frame, size = 1, on = 1 }: { x: number; ground: number; frame: number; size?: number; on?: number }) => (
+  <g>
+    <rect x={x - 8 * size} y={ground - 70 * size} width={16 * size} height={110 * size} fill={CREME} stroke={TERRA} strokeWidth={4} />
+    <rect x={x - 22 * size} y={ground - 100 * size} width={44 * size} height={34 * size} rx={6 * size} fill={CREME} stroke={TERRA} strokeWidth={4} />
+    <circle cx={x} cy={ground - 83 * size} r={6 * size} fill={LUZ} opacity={on * (0.5 + 0.5 * Math.sin(frame / 5))} />
+    <line x1={x + 12 * size} y1={ground - 100 * size} x2={x + 12 * size} y2={ground - 140 * size} stroke={CREME} strokeWidth={4} />
+    {on > 0 &&
+      [0, 1, 2].map((k) => {
+        const r = (((frame / 30 + k / 3) % 1) * 50 + 10) * size;
+        return <path key={k} d={`M ${x + 12 * size - r * 0.7} ${ground - 140 * size - r * 0.7} A ${r} ${r} 0 0 1 ${x + 12 * size + r * 0.7} ${ground - 140 * size - r * 0.7}`} stroke={LUZ} strokeWidth={4} fill="none" opacity={on * (1 - r / (60 * size))} />;
+      })}
+  </g>
+);
+
+// Radio/telecom tower with blinking light.
+export const Antena = ({ x, ground, frame, h = 420 }: { x: number; ground: number; frame: number; h?: number }) => (
+  <g stroke={CREME} strokeWidth={5} fill="none">
+    <path d={`M ${x - 60} ${ground} L ${x} ${ground - h} L ${x + 60} ${ground}`} />
+    {[0.25, 0.5, 0.75].map((k) => (
+      <line key={k} x1={x - 60 * (1 - k)} y1={ground - h * k} x2={x + 60 * (1 - k)} y2={ground - h * k} />
+    ))}
+    <circle cx={x} cy={ground - h - 10} r={10} fill={LUZ} stroke="none" opacity={frame % 30 < 15 ? 1 : 0.25} />
+  </g>
+);
+
+// Laptop seen from the side-front, with a glowing screen.
+export const Notebook = ({ x, y, size = 1, glow = 0.8 }: { x: number; y: number; size?: number; glow?: number }) => (
+  <g>
+    <path d={`M ${x - 120 * size} ${y} L ${x + 120 * size} ${y} L ${x + 140 * size} ${y + 18 * size} L ${x - 140 * size} ${y + 18 * size} Z`} fill={CREME} stroke={TERRA} strokeWidth={5} />
+    <rect x={x - 110 * size} y={y - 150 * size} width={220 * size} height={145 * size} rx={8 * size} fill={NOITE} stroke={CREME} strokeWidth={6} />
+    <rect x={x - 96 * size} y={y - 136 * size} width={192 * size} height={117 * size} fill={LUZ} opacity={0.15 + 0.25 * glow} />
+  </g>
+);
+
+// Solar panel on a stand.
+export const PainelSolar = ({ x, ground, size = 1 }: { x: number; ground: number; size?: number }) => (
+  <g stroke={TERRA} strokeWidth={5}>
+    <line x1={x} y1={ground} x2={x} y2={ground - 90 * size} stroke={CREME} strokeWidth={8} />
+    <g transform={`translate(${x} ${ground - 110 * size}) rotate(-18)`}>
+      <rect x={-110 * size} y={-50 * size} width={220 * size} height={100 * size} fill="#2c3a4a" stroke={CREME} strokeWidth={5} />
+      {[-1, 0, 1].map((k) => <line key={k} x1={k * 55 * size} y1={-50 * size} x2={k * 55 * size} y2={50 * size} stroke={LUZ} strokeWidth={2} opacity={0.6} />)}
+      <line x1={-110 * size} y1={0} x2={110 * size} y2={0} stroke={LUZ} strokeWidth={2} opacity={0.6} />
+    </g>
+  </g>
+);
+
+// Cloud of data: a rounded cloud outline with dots flowing up into it.
+export const Nuvem = ({ x, y, frame, size = 1 }: { x: number; y: number; frame: number; size?: number }) => (
+  <g>
+    <path d={`M ${x - 110 * size} ${y + 40 * size} a ${50 * size} ${50 * size} 0 0 1 ${10 * size} ${-95 * size} a ${70 * size} ${70 * size} 0 0 1 ${130 * size} ${-20 * size} a ${55 * size} ${55 * size} 0 0 1 ${85 * size} ${70 * size} a ${40 * size} ${40 * size} 0 0 1 ${-15 * size} ${45 * size} Z`} fill="none" stroke={LUZ} strokeWidth={6} filter="url(#glow)" />
+    {Array.from({ length: 8 }, (_, i) => {
+      const life = (frame / 40 + i / 8) % 1;
+      return <rect key={i} x={x - 60 * size + i * 16 * size} y={y + 160 * size - life * 140 * size} width={7 * size} height={7 * size} fill={LUZ} opacity={1 - life} />;
+    })}
+  </g>
+);

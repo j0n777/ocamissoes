@@ -18,22 +18,24 @@ Base:
 | Ponte | `s-ponte` | metade de cima barro ("Antes"), metade de baixo noite ("Hoje"), o "o" do logo na emenda | O coração: mesma necessidade, duas eras |
 | Reflexão | `s-reflexao` | fundo noite, anel em luz bem sutil, título grande e apoio | A ideia que fica |
 | Lista | `s-lista` | título no alto e até 3 cartões numerados em mono | Algo útil: passos, ferramentas, perguntas |
+| Imagem | `s-imagem` | imagem chanfrada saindo pela direita (720 px de altura), título, apoio e crédito | A prova: documento, lugar, objeto. Ver imagens.md |
+| Fundo com imagem | `.bg-img` dentro de qualquer slide | imagem em duotone atrás do texto, com degradê barro | Capa ou reflexão com clima (crédito na legenda) |
 | CTA | `s-cta` | wordmark grande, título, barra creme chanfrada com @ocamissoes e seta | Sempre o último |
 
 ## Criar um arquétipo novo
 
 Fique no mesmo sistema:
 - Um título `.big` (84 a 150 px), um `.sub` opcional (40 a 46 px), etiquetas mono (20 a 30 px), um acento.
-- Visuais só com HTML/SVG: anéis, linhas, pontos, barras, grade, divisão de tela. Nunca imagem de banco ou de IA.
+- Visuais desenhados em HTML/SVG (anéis, linhas, pontos, barras, grade, divisão de tela) e imagens só pelas regras de imagens.md. Nunca banco de imagens sem licença.
 - Ideias que cabem:
   - **Mapa estilizado**: pontos das reduções ligados por linhas (só com coordenadas aproximadas e sem afirmar distâncias sem fonte);
   - **Céu**: as Plêiades em pontos creme sobre noite, ligadas por uma linha;
   - **Número + barra**: um dado de hoje com fonte, em barra luz;
   - **Pergunta**: só uma pergunta em tipo enorme, para engajar nos comentários.
 
-## Fotos (quando a OCA enviar)
+## Imagens
 
-- Use só fotos de eventos ou pessoas da OCA, com autorização.
-- Classe sugerida (acrescente ao CSS):
-  `.photo { filter: sepia(.35) saturate(.8) contrast(1.05); }` e um gradiente terra por cima para o texto ler.
+- Envolva a imagem num `<div class="img doc|duo|ia">` (ou `img duo bg-img` para fundo). Regras completas em imagens.md.
+- `object-position` decide o recorte: para página de livro, mostre o topo (`50% 10%`).
+- Fotos da OCA (eventos): use `.doc`; com pessoas, só com autorização.
 - Nunca fotos de povos indígenas sem autorização e contexto.

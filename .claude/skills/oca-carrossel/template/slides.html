@@ -46,6 +46,19 @@ body { background: #000; font-family: Outfit, sans-serif; -webkit-font-smoothing
 /* The logo "o": ring + dark centre. Decorative, partly off-canvas. */
 .ring { position: absolute; border-radius: 50%; z-index: 0; }
 
+/* Images (references/imagens.md). Every image carries a .src credit line.
+   .duo  brand duotone: grayscale image multiplied over barro (backgrounds, mood)
+   .doc  document/photo kept true, slightly warmed (when the image is the proof)
+   .ia   AI illustration already in the house style: shown as is */
+.img { position: relative; overflow: hidden; background: var(--terra); }
+.img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.duo { background: var(--barro); }
+.duo img { filter: grayscale(1) contrast(1.15) brightness(1.05); mix-blend-mode: multiply; }
+.doc img { filter: sepia(.25) saturate(.85) contrast(1.05); }
+.bg-img { position: absolute; inset: 0; z-index: 0; }
+.bg-img img { opacity: .5; }
+.bg-img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, var(--barro) 38%, rgba(145,87,41,.7) 72%, rgba(145,87,41,.55)); }
+
 /* 1 capa */
 .s-capa .ring { width: 980px; height: 980px; right: -380px; top: -260px; border: 150px solid rgba(248,244,225,.10); }
 .s-capa .tag { margin-top: 80px; } .s-capa .tag i { background: var(--urucum); }
@@ -68,6 +81,13 @@ body { background: #000; font-family: Outfit, sans-serif; -webkit-font-smoothing
 .s-linha .pt span { display: block; font-family: "JetBrains Mono", monospace; font-size: 42px; margin-top: 30px; font-weight: 700; }
 .s-linha .pt em { display: block; font-style: normal; font-size: 31px; line-height: 1.2; margin-top: 12px; color: var(--palha); }
 .s-linha .big { font-size: 110px; margin-top: auto; }
+
+/* imagem: image on top (chamfered, bleeding right), headline below */
+.s-imagem .img { margin: 56px -80px 0 0; height: 720px; }
+.s-imagem .img img { object-position: 50% 12%; }
+.s-imagem .big { font-size: 96px; margin-top: auto; }
+.s-imagem .sub { margin-top: 26px; }
+.s-imagem .src { margin-top: 30px; }
 
 /* 4 destaque: one strong line with a big quote mark */
 .s-destaque .q { font-size: 300px; font-weight: 700; line-height: .7; color: var(--urucum); margin-top: 110px; }
@@ -108,6 +128,7 @@ body { background: #000; font-family: Outfit, sans-serif; -webkit-font-smoothing
 
 <!-- 1. Capa (gancho) -->
 <section class="slide g-barro s-capa" id="s1">
+  <div class="img duo bg-img"><img src="assets/ref/yapuguay-1724-portada.jpg" alt="" style="object-position: 50% 8%"></div>
   <div class="ring"></div>
   <img class="brand" src="assets/oca-wordmark-creme.svg" alt="OCA Missões">
   <p class="tag"><i></i>Missões, 1700</p>
@@ -136,13 +157,13 @@ body { background: #000; font-family: Outfit, sans-serif; -webkit-font-smoothing
   <p class="big">A mesma vontade<span class="u">,</span> outro <span class="l">ritmo</span>.</p>
 </section>
 
-<!-- 4. Destaque -->
-<section class="slide g-creme s-destaque" id="s4">
+<!-- 4. Imagem (a prova: a folha de rosto original) -->
+<section class="slide g-creme s-imagem" id="s4">
   <img class="brand" src="assets/oca-wordmark-terra.svg" alt="OCA Missões">
-  <p class="q">“</p>
+  <div class="img doc chamfer"><img src="assets/ref/yapuguay-1724-portada.jpg" alt="Folha de rosto de 1724"></div>
   <p class="big">Em 1724, um livro em guarani saiu daqui<span class="u">.</span></p>
-  <p class="sub">“Explicacion de el catechismo en lengua guarani”, de Nicolás&nbsp;Yapuguay, impresso em Santa María la&nbsp;Mayor.</p>
-  <p class="src">Fonte: Archive.org; Medan, Antiguos Jesuitas en Iberoamérica, 2018</p>
+  <p class="sub">De Nicolás Yapuguay, cacique e músico de Santa&nbsp;María.</p>
+  <p class="src">Imagem: John Carter Brown Library, via Internet Archive (obra de 1724, domínio público)</p>
 </section>
 
 <!-- 5. Ponte (antes | hoje) -->

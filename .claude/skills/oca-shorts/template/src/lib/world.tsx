@@ -10,17 +10,44 @@ import { ARGILA, BARRO, CREME, Fonts, H, MATE, NOITE, PALHA, TERRA, URUCUM, W } 
 export type Cam = { x: number; y: number; zoom: number }; // centre of view
 
 export type Era = "antes" | "hoje";
+export type Hora = "dia" | "entardecer" | "noite";
 
-// Sky colours per era: warm dusk for "antes", deep night-brown for "hoje".
-const SKY: Record<Era, [string, string]> = {
-  antes: ["#3a1f0e", "#b86a34"],
-  hoje: [NOITE, "#3b2414"],
+// Sky colours. By default "antes" is a warm dusk and "hoje" a deep night-brown;
+// pass `hora` to Stage for a day or night version of either era.
+const SKY: Record<Hora, [string, string]> = {
+  dia: ["#e6c08f", "#f4dfb6"],
+  entardecer: ["#3a1f0e", "#b86a34"],
+  noite: [NOITE, "#3b2414"],
+};
+const DEFAULT_HORA: Record<Era, Hora> = { antes: "entardecer", hoje: "noite" };
+
+// Camera presets around a subject point (world units): the shot grammar of
+// the skill. aberto = context, medio = body and gesture, close = upper body,
+// detalhe = hands or an object (pass that point, it is centred), ceu = tilt up
+// to the sky above the subject.
+export type Plano = "aberto" | "medio" | "close" | "detalhe" | "ceu";
+export const shot = (kind: Plano, at: [number, number]): Cam => {
+  const [x, y] = at;
+  switch (kind) {
+    case "aberto":
+      return { x, y: y - 260, zoom: 0.95 };
+    case "medio":
+      return { x, y: y - 220, zoom: 1.35 };
+    case "close":
+      return { x, y: y - 330, zoom: 2.3 };
+    case "detalhe":
+      return { x, y, zoom: 3.2 };
+    case "ceu":
+      return { x, y: y - 820, zoom: 1.1 };
+  }
 };
 
 // The frame: sky gradient in screen space, world through the camera, then a
 // screen-space overlay (labels, tags). `defs` lets scenes add SVG filters.
-export const Stage = ({ cam, era, children, overlay, defs }: { cam: Cam; era: Era; children: ReactNode; overlay?: ReactNode; defs?: ReactNode }) => (
-  <AbsoluteFill style={{ background: `linear-gradient(180deg, ${SKY[era][0]} 0%, ${SKY[era][0]} 35%, ${SKY[era][1]} 75%)` }}>
+export const Stage = ({ cam, era, hora, children, overlay, defs }: { cam: Cam; era: Era; hora?: Hora; children: ReactNode; overlay?: ReactNode; defs?: ReactNode }) => {
+  const sky = SKY[hora ?? DEFAULT_HORA[era]];
+  return (
+  <AbsoluteFill style={{ background: `linear-gradient(180deg, ${sky[0]} 0%, ${sky[0]} 35%, ${sky[1]} 75%)` }}>
     <Fonts />
     <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ position: "absolute", inset: 0 }}>
       {defs && <defs>{defs}</defs>}
@@ -28,7 +55,8 @@ export const Stage = ({ cam, era, children, overlay, defs }: { cam: Cam; era: Er
     </svg>
     {overlay}
   </AbsoluteFill>
-);
+  );
+};
 
 // Hard cuts: the shot whose `from` is the latest one at or before `frame`.
 export const pickShot = <T,>(frame: number, shots: { from: number; shot: T }[]) => shots.reduce((cur, s) => (frame >= s.from ? s : cur), shots[0]);
@@ -61,7 +89,7 @@ export const Stars = ({ frame, box = [-600, -400, 1700, 900], count = 70, seed =
       const x = box[0] + hash01(i, seed) * (box[2] - box[0]);
       const y = box[1] + hash01(i, seed + 1) * (box[3] - box[1]);
       const r = 1.5 + hash01(i, seed + 2) * 2.5;
-      const tw = 0.55 + 0.45 * Math.sin(frame / (6 + hash01(i, seed + 3) * 10) + i);
+      const tw = 0.7 + 0.3 * Math.sin(frame / (24 + hash01(i, seed + 3) * 30) + i); // slow twinkle: fast flicker reads as jitter
       return <circle key={i} cx={x} cy={y} r={r} fill={CREME} opacity={tw * 0.8} />;
     })}
   </g>
@@ -78,7 +106,7 @@ export const Pleiades = ({ x, y, frame, glow = 0, link = 0, color = CREME }: { x
     <g>
       {link > 0 && <path d={d} fill="none" stroke={color} strokeWidth={2.5} strokeDasharray="1" pathLength={1} strokeDashoffset={1 - link} opacity={0.7} />}
       {PLEIADES.map(([px, py], i) => {
-        const tw = 0.8 + 0.2 * Math.sin(frame / 5 + i * 1.3);
+        const tw = 0.92 + 0.08 * Math.sin(frame / 20 + i * 1.3);
         return (
           <g key={i}>
             <circle cx={x + px} cy={y + py} r={(10 + 14 * glow) * tw} fill={color} opacity={0.12 + 0.2 * glow} />
@@ -175,5 +203,109 @@ export const Rio = ({ y, frame, h = 70, color = "#5b6f73" }: { y: number; frame:
       const x = ((hash01(i, 9) * 4000 + frame * (2 + hash01(i, 10) * 2)) % 4000) - 1400;
       return <line key={i} x1={x} x2={x + 40 + hash01(i, 11) * 60} y1={y + 12 + hash01(i, 12) * (h - 24)} y2={y + 12 + hash01(i, 12) * (h - 24)} stroke={CREME} strokeWidth={3} opacity={0.35} strokeLinecap="round" />;
     })}
+  </g>
+);
+
+// Sun with soft rays that turn slowly.
+export const Sol = ({ x, y, frame, r = 70 }: { x: number; y: number; frame: number; r?: number }) => (
+  <g>
+    <circle cx={x} cy={y} r={r * 2.4} fill={CREME} opacity={0.12} />
+    {Array.from({ length: 12 }, (_, i) => {
+      const a = (i / 12) * Math.PI * 2 + frame / 240;
+      return <line key={i} x1={x + Math.cos(a) * r * 1.3} y1={y + Math.sin(a) * r * 1.3} x2={x + Math.cos(a) * r * 1.75} y2={y + Math.sin(a) * r * 1.75} stroke={CREME} strokeWidth={8} strokeLinecap="round" opacity={0.6} />;
+    })}
+    <circle cx={x} cy={y} r={r} fill={CREME} />
+  </g>
+);
+
+// Erva-mate tree (erval): short trunk, rounded leafy crown. `sway` moves the leaves.
+export const Erval = ({ x, ground, size = 1, frame = 0 }: { x: number; ground: number; size?: number; frame?: number }) => {
+  const h = 230 * size, sw = Math.sin(frame / 25) * 4 * size;
+  const blobs: [number, number, number][] = [[0, -h, 90], [-70, -h + 50, 70], [70, -h + 45, 72], [-30, -h + 95, 60], [40, -h + 100, 58]];
+  return (
+    <g>
+      <path d={`M ${x - 14 * size} ${ground} L ${x - 8 * size} ${ground - h + 60 * size} L ${x + 8 * size} ${ground - h + 60 * size} L ${x + 14 * size} ${ground} Z`} fill={TERRA} />
+      {blobs.map(([dx, dy, r], i) => (
+        <circle key={i} cx={x + dx * size + sw} cy={ground + dy * size} r={r * size} fill={i % 2 ? MATE : "#5f7833"} stroke={TERRA} strokeWidth={5} />
+      ))}
+      {blobs.map(([dx, dy], i) => (
+        <ellipse key={`l${i}`} cx={x + (dx + 18) * size + sw} cy={ground + (dy - 12) * size} rx={14 * size} ry={7 * size} fill={PALHA} opacity={0.35} transform={`rotate(-25 ${x + (dx + 18) * size + sw} ${ground + (dy - 12) * size})`} />
+      ))}
+    </g>
+  );
+};
+
+// Planted field (roça) in simple perspective: rows that converge to the horizon.
+export const Roca = ({ x, ground, w = 700, depth = 160, rows = 6, grow = 1 }: { x: number; ground: number; w?: number; depth?: number; rows?: number; grow?: number }) => (
+  <g>
+    <path d={`M ${x - w / 2} ${ground + depth} L ${x - w * 0.3} ${ground} L ${x + w * 0.3} ${ground} L ${x + w / 2} ${ground + depth} Z`} fill="#6b3c19" />
+    {Array.from({ length: rows }, (_, i) => {
+      const t = (i + 0.5) / rows;
+      const xb = x - w / 2 + w * t, xt = x - w * 0.3 + w * 0.6 * t;
+      return (
+        <g key={i}>
+          <line x1={xb} y1={ground + depth} x2={xt} y2={ground} stroke={TERRA} strokeWidth={6} />
+          {grow > 0 &&
+            [0.15, 0.45, 0.8].map((k) => (
+              <circle key={k} cx={lerp(xt, xb, k)} cy={ground + depth * k - 10 * k * grow} r={(4 + 10 * k) * clamp01(grow)} fill={MATE} />
+            ))}
+        </g>
+      );
+    })}
+  </g>
+);
+
+// Wooden printing press (the mission press, stylised): frame, screw, platen.
+export const Prensa = ({ x, ground, size = 1, press = 0 }: { x: number; ground: number; size?: number; press?: number }) => {
+  const w = 260 * size, h = 360 * size, l = x - w / 2, top = ground - h;
+  const py = top + 120 * size + 40 * size * clamp01(press);
+  return (
+    <g stroke={TERRA} strokeWidth={6} strokeLinejoin="round">
+      <rect x={l} y={top} width={28 * size} height={h} fill={ARGILA} />
+      <rect x={l + w - 28 * size} y={top} width={28 * size} height={h} fill={ARGILA} />
+      <rect x={l - 10 * size} y={top} width={w + 20 * size} height={34 * size} fill={ARGILA} />
+      <rect x={x - 9 * size} y={top + 34 * size} width={18 * size} height={py - top - 34 * size} fill={PALHA} />
+      <line x1={x - 70 * size} y1={top + 70 * size} x2={x + 70 * size} y2={top + 70 * size} strokeWidth={10 * size} stroke={TERRA} strokeLinecap="round" />
+      <rect x={x - 80 * size} y={py} width={160 * size} height={22 * size} fill={PALHA} />
+      <rect x={l + 20 * size} y={ground - 150 * size} width={w - 40 * size} height={30 * size} fill={ARGILA} />
+      <rect x={x - 70 * size} y={ground - 172 * size} width={140 * size} height={22 * size} fill={CREME} />
+    </g>
+  );
+};
+
+// Open book; `lines` 0..1 writes the lines in.
+export const Livro = ({ x, y, size = 1, lines = 1 }: { x: number; y: number; size?: number; lines?: number }) => (
+  <g>
+    <path d={`M ${x} ${y} q ${-60 * size} ${-26 * size} ${-130 * size} ${-8 * size} l 0 ${110 * size} q ${70 * size} ${-18 * size} ${130 * size} ${8 * size} q ${60 * size} ${-26 * size} ${130 * size} ${-8 * size} l 0 ${-110 * size} q ${-70 * size} ${-18 * size} ${-130 * size} ${8 * size} Z`} fill={CREME} stroke={TERRA} strokeWidth={6} strokeLinejoin="round" />
+    <line x1={x} y1={y} x2={x} y2={y + 110 * size} stroke={TERRA} strokeWidth={4} />
+    {[0, 1, 2, 3, 4].map((i) =>
+      [-1, 1].map((side) => {
+        const t = clamp01(lines * 5 - i);
+        if (t <= 0) return null;
+        const yy = y + (14 + i * 18) * size;
+        return <line key={`${i}${side}`} x1={x + side * 20 * size} y1={yy} x2={x + side * (20 + 90 * t) * size} y2={yy} stroke={TERRA} strokeWidth={4} opacity={0.6} strokeLinecap="round" />;
+      }),
+    )}
+  </g>
+);
+
+// Canoe on the water line, rocking gently.
+export const Canoa = ({ x, y, frame, size = 1 }: { x: number; y: number; frame: number; size?: number }) => {
+  const rock = Math.sin(frame / 14) * 2;
+  return (
+    <g transform={`rotate(${rock} ${x} ${y})`}>
+      <path d={`M ${x - 150 * size} ${y - 20 * size} Q ${x} ${y + 40 * size} ${x + 150 * size} ${y - 20 * size} L ${x + 120 * size} ${y - 6 * size} Q ${x} ${y + 18 * size} ${x - 120 * size} ${y - 6 * size} Z`} fill={ARGILA} stroke={TERRA} strokeWidth={6} strokeLinejoin="round" />
+    </g>
+  );
+};
+
+// Close-up gourd (cuia) of chimarrão, for detail shots.
+export const Cuia = ({ x, y, size = 1, steam = 0 }: { x: number; y: number; size?: number; steam?: number }) => (
+  <g>
+    {steam > 0 &&
+      [0, 1].map((k) => <path key={k} d={`M ${x + (k ? 20 : -20) * size} ${y - 110 * size} q ${12 * size} ${-25 * size} 0 ${-50 * size} q ${-12 * size} ${-25 * size} 0 ${-50 * size}`} stroke={CREME} strokeWidth={5} fill="none" opacity={0.35 * steam} strokeLinecap="round" />)}
+    <line x1={x + 10 * size} y1={y - 70 * size} x2={x + 45 * size} y2={y - 190 * size} stroke={PALHA} strokeWidth={10 * size} strokeLinecap="round" />
+    <path d={`M ${x - 75 * size} ${y - 80 * size} q ${-20 * size} ${130 * size} ${75 * size} ${135 * size} q ${95 * size} ${-5 * size} ${75 * size} ${-135 * size} Z`} fill={MATE} stroke={TERRA} strokeWidth={7} strokeLinejoin="round" />
+    <ellipse cx={x} cy={y - 80 * size} rx={75 * size} ry={16 * size} fill="#4d6328" stroke={TERRA} strokeWidth={6} />
   </g>
 );

@@ -67,6 +67,7 @@ Para 6 slides, junte Contexto e Destaque e corte a Reflexão. Para 10, acrescent
 <a ponte + convite para seguir ou participar da OCA>
 
 Referência: <fonte(s) do acervo>
+Imagens: <créditos, se houver>
 
 #OCAMissões #Missões #inovação #RioGrandeDoSul #<tema>
 ```
@@ -78,11 +79,14 @@ As Missões já imprimiam livros em 1700. E isso diz muito sobre inovação.
 
 Segundo registros reunidos pela imprensa de Misiones, uma imprensa móvel rodou entre as reduções de Loreto, Santa María la Mayor e San Francisco Javier de 1700 a 1727. Em 1724, saiu dali um livro inteiro em guarani, assinado por Nicolás Yapuguay.
 
+O próprio prefácio do livro apresenta Yapuguay como cacique e músico de Santa María.
+
 Hoje, guardar e espalhar conhecimento cabe no bolso: IA que transcreve reuniões, organiza o que foi dito e traduz para outros idiomas.
 
 A vontade de registrar e compartilhar o que se sabe é a mesma. As ferramentas mudaram. É isso que a OCA conecta nas Missões.
 
 Referência: Misiones Online (08/09/2026); Archive.org, "Explicacion de el catechismo en lengua guarani" (1724).
+Imagens: folha de rosto de 1724, John Carter Brown Library, via Internet Archive (domínio público).
 
 #OCAMissões #Missões #inovação #história #IA
 ```

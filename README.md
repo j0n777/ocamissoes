@@ -10,6 +10,7 @@ A linha editorial: **a inovação sempre esteve aqui.** Cada conteúdo liga um s
 .claude/skills/
   oca-shorts/        vídeos 2D (Remotion + SVG), trilhas e SFX sintetizados, legenda com referência
   oca-carrossel/     carrosséis 1080x1350 (HTML → PNG)
+  oca-shorts/biblioteca/  folhas prontas: personagens, poses, objetos, tecnologia, céus, planos
 brand/               logo, wordmarks vetorizados, paleta, fontes (OFL)
 references/          análise do Instagram, técnicas trazidas de outros projetos
 exemplos/            saídas aprovadas: o vídeo modelo (Plêiades → IA) e o carrossel modelo (imprensa de 1700)
@@ -43,6 +44,7 @@ npm install && node scripts/render.mjs slides.html out
 
 ## Princípios
 
-- Sem modelos generativos: formas em código e som sintetizado, 100% próprios.
+- Vídeo sem modelos generativos: formas em código e som sintetizado, 100% próprios. A biblioteca visual pronta (personagens em 3 vistas, poses, objetos, céus, planos) fica em `.claude/skills/oca-shorts/biblioteca/`.
+- Carrossel com 1 a 3 imagens de referência: documento ou foto real com licença livre, foto da OCA, ou ilustração de IA no estilo da casa, sempre com crédito.
 - Todo fato com fonte (acervo); todo vídeo com legenda que explica a referência.
 - Respeito: o saber Guarani é conhecimento vivo, nunca caricatura.

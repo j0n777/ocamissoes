@@ -20,7 +20,7 @@ Levantamento feito em 2026-10-30 nos repositórios do Jonata que já fazem víde
 | Motor de síntese de áudio (osc, ruído, filtros, reverb, master) | nf7-shorts (`audio.mjs`) | `scripts/audio.mjs`, com instrumentos novos (flauta, chocalho, taquara, tambor, grilos) |
 | Texto que entra com mola e giro e sai com colapso cúbico | viral-skills, `KeywordPop.tsx` | `Label` em `lib/brand.tsx` |
 | Gancho em barra preenchida, na tela em até 0,5 s | viral-skills, `HookCard.tsx` e regras de hook | `Label bar=...` e checklist |
-| Traço "fervendo" (feTurbulence + feDisplacementMap, semente a cada 3 quadros) | shotcraft, `LineBoil.tsx` | `BoilDef` em `lib/fx.tsx` |
+| Traço "fervendo" (feTurbulence + feDisplacementMap, semente a cada 3 quadros) | shotcraft, `LineBoil.tsx` | `BoilDef` em `lib/fx.tsx`; **desligado na cena modelo** desde 2026-10-30: na cena inteira lia como tremor no celular. Só pontual (estilo.md) |
 | Máscara circular como transição | shotcraft, `InkBleedReveal.tsx` | `Portal` (o "o" do logo como íris) |
 | Desenho de traço com `pathLength=1` e dashoffset | shotcraft, `DrawSvgTrace.tsx` | `Pleiades link`, `CircuitRoots`, check do `HoloPanel` |
 | Partículas com semente (vaga-lumes, poeira, faíscas) | OpenMontage, `ParticleOverlay` (ideia) | `Particles` em `lib/fx.tsx` |

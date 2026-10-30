@@ -14,10 +14,12 @@ Repositório de conteúdo do @ocamissoes ("O Ecossistema de Inovação das Miss�
 - **Respeito:** Guarani ou Mbyá-Guarani conforme a fonte, nunca "índios" no nosso texto. Nada de estereótipo visual ou sonoro. Saber ancestral como especialidade; o "hoje" continua o "antes", não o supera.
 - **Marca:** paleta e fontes em `brand/README.md`. Urucum só no "antes", luz só no "hoje".
 - **Áudio:** só o que `scripts/audio.mjs` gera, ou arquivos com licença clara anotados em `conteudo/creditos.md`. Nunca música comercial.
+- **Imagens (carrossel):** regras em `.claude/skills/oca-carrossel/references/imagens.md`. Fonte real com licença livre para o que é histórico; IA só para ilustração no estilo da casa, marcada como tal; nunca rostos indígenas ou documentos gerados por IA. Toda imagem de terceiros entra em `conteudo/creditos.md`.
+- **Vídeo sem tremor:** grão fixo, sem traço vibrando na cena toda, brilhos lentos (ver `estilo.md`).
 - **Texto:** português do Brasil, sem travessões.
 - **Registro:** cada vídeo ou carrossel publicado ganha uma linha em `conteudo/videos.md` ou `conteudo/carrosseis.md`.
 
 ## Fluxo de trabalho
 
 - Edite pelo GitHub (branch + PR). Não faça merge sem pedido explícito.
-- Antes de commitar mudança em lib do vídeo: `npx tsc --noEmit` e um still do `FigureSheet` e da cena alterada.
+- Antes de commitar mudança em lib do vídeo: `npx tsc --noEmit` e um still do `FigureSheet` e da cena alterada. Se mudou algo desenhável, rode `bash scripts/biblioteca.sh` e atualize `oca-shorts/biblioteca/`.

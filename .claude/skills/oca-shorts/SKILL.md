@@ -10,6 +10,7 @@ Vídeos curtos que mostram que a inovação sempre esteve nas Missões. Uma perg
 Leia antes de criar:
 - [references/ideacao.md](references/ideacao.md): o motor de ideias (pergunta, saber, ferramenta, ponte), pontuação e banco de conceitos. Comece aqui.
 - [references/formatos.md](references/formatos.md): os cinco formatos (Ponte, Duelo de eras, Linha do tempo, Herança, Mutirão).
+- [references/biblioteca.md](references/biblioteca.md) e a pasta [biblioteca/](biblioteca/): as folhas prontas de personagens (3 vistas), poses, objetos do "antes", kit do "hoje", céus e planos de câmera. Escolha daqui antes de desenhar algo novo.
 - [references/estilo.md](references/estilo.md): paleta, personagens, cenário, movimento, texto, efeitos.
 - [references/audio.md](references/audio.md): trilhas e SFX, mixagem, loudness e licenças.
 - [references/legenda.md](references/legenda.md): a legenda obrigatória com a referência.
@@ -46,7 +47,7 @@ Teste antes de construir: descreva o último quadro em uma frase. Se alguém, se
 
 ## 3. Pipeline
 
-`template/` é um projeto Remotion pronto, com a cena `PleiadesIA` (Ponte, 20 s, aprovada como exemplo) e o `FigureSheet` (folha de personagens).
+`template/` é um projeto Remotion pronto, com a cena `PleiadesIA` (Ponte, 20 s, aprovada como exemplo), o `FigureSheet` e as 6 folhas da biblioteca (`Bib*`, `bash scripts/biblioteca.sh`).
 
 Copie o template; nunca edite no lugar. `SKILL_DIR` é a pasta deste SKILL.md (no repo, `.claude/skills/oca-shorts`).
 
@@ -78,10 +79,10 @@ npm run audio                     # gera public/audio/music/*.wav e public/audio
 
 - **`anim.ts`**: funções puras do quadro: `progress`, `easeInOut`, `easeOut`, `settle` (pouso com overshoot), `lerp`, `arc`, `hash01`. Nunca use estado nem `Math.random()`.
 - **`brand.tsx`**: cores, `Fonts`, `Label` (entra com mola e leve giro, sai com colapso cúbico; `bar` vira gancho), `EraTag` ("HÁ SÉCULOS", "HOJE"), `Watermark` (@OCAMISSOES), `EndCard` (wordmark + "ecossistema de inovação das Missões").
-- **`figure.tsx`**: `Figure` com `look` `raiz` | `inova` | `povo`, `prop` `cesto` | `tablet` | `semente`, e poses `STAND`, `LOOK_UP`, `KNEEL`, `HOLD`, `WAVE`, `walk()`, `mixPose()`.
-- **`world.tsx`**: `Stage` (céu por era + câmera), `pickShot` (cortes secos), `Hills` (coxilhas em camadas), `Stars`, `Pleiades` (`glow`, `link`), `Moon`, `Oca`, `Ruina` (fachada missioneira estilizada), `Sprout`, `Fogueira`, `Rio`.
-- **`tech.tsx`**: `GlowDef`, `HoloPanel` (painel com barras e check), `Satellite` (com `ping`), `Drone`, `CircuitRoots` (raízes que viram circuito: a assinatura visual), `DataMotes`.
-- **`fx.tsx`**: `Grain` (textura de papel/argila), `Vignette`, `BoilDef` (traço "desenhado à mão"), `Portal` (o "o" do logo como íris entre eras), `Particles` (`brasa`, `poeira`, `vagalume`, `dados`), `typed`, `drawOffset`.
+- **`figure.tsx`**: `Figure` com `look` `raiz` | `inova` | `povo`, `view` `perfil` | `frente` | `costas`, `prop` `cesto` | `semente` | `cuia` | `livro` | `tablet` | `celular`; poses de perfil `STAND`, `LOOK_UP`, `KNEEL`, `SIT`, `CARRY`, `HOLD`, `WAVE`, `walk()`, e de frente `FRENTE`, `FRENTE_UP`, `FRENTE_OPEN`, `FRENTE_HOLD`, `FRENTE_WAVE`; `mixPose()`.
+- **`world.tsx`**: `Stage` (céu por era e `hora` `dia` | `entardecer` | `noite`, câmera), `shot(tipo, ponto)` (planos `aberto`, `medio`, `close`, `detalhe`, `ceu`), `pickShot` (cortes secos), `Hills`, `Stars`, `Pleiades`, `Moon`, `Sol`, `Oca`, `Ruina`, `Erval`, `Roca`, `Sprout`, `Fogueira`, `Rio`, `Canoa`, `Prensa`, `Livro`, `Cuia`.
+- **`tech.tsx`**: `GlowDef`, `HoloPanel`, `Satellite` (com `ping`), `Drone`, `Nuvem`, `Celular`, `Notebook`, `Antena`, `PainelSolar`, `Sensor`, `CircuitRoots` (raízes que viram circuito: a assinatura visual), `DataMotes`.
+- **`fx.tsx`**: `Grain` (textura de papel fixa), `Vignette`, `Portal` (o "o" do logo como íris entre eras), `Particles` (`brasa`, `poeira`, `vagalume`, `dados`), `typed`, `drawOffset`, e `BoilDef` (traço vibrando: só num elemento, por menos de 1 s, veja estilo.md).
 - **`sound.tsx`**: `<Music name volume stopAt>`, `<Sfx name at volume length>`, `beatFrames()`, `TRAVESSIA_TURN` (quadro 288, onde a trilha `travessia` vira para o "hoje"). Nomes tipados: erro de digitação quebra o `tsc`.
 
 ## 5. Checklist (cada still e o arquivo final)
@@ -92,6 +93,8 @@ npm run audio                     # gera public/audio/music/*.wav e public/audio
 - [ ] Urucum só no "antes", luz só no "hoje" (os dois juntos só no encontro final).
 - [ ] A Guardiã aparece como especialista; nenhum estereótipo; os dois personagens se encontram no fim.
 - [ ] Personagens nunca cortados pela borda, nunca flutuando, nunca atravessando objetos.
+- [ ] Nada treme: grão fixo, sem `BoilDef` na cena inteira, brilhos lentos (mais de 20 quadros por ciclo), câmera sem chacoalhar.
+- [ ] Pelo menos 2 vistas ou 2 planos diferentes no vídeo (biblioteca.md), para não ficar tudo no mesmo enquadramento.
 - [ ] Cada contato tem som no mesmo quadro; ambiência ligada; trilha abaixo dos SFX.
 - [ ] Toda referência está no acervo; nenhum número sem fonte; zero travessões.
 - [ ] Arquivo 1080x1920, 30 fps, 15 a 25 s, -14 LUFS, pico até -1 dB.

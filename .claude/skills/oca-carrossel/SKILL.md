@@ -10,6 +10,7 @@ Um carrossel que ensina algo útil em 8 deslizadas e deixa uma ideia: **a inova�
 Leia antes de escrever:
 - [references/copy.md](references/copy.md): o arco (gancho, fato, contexto, destaque, ponte, reflexão, útil, CTA), regras de texto, ângulos e legenda.
 - [references/slides.md](references/slides.md): os arquétipos de slide do `template/slides.html` e como criar novos.
+- [references/imagens.md](references/imagens.md): imagens de referência: pesquisar (Commons, Internet Archive), gerar com IA no estilo da casa, o que é proibido, crédito.
 - [references/acervo.md](references/acervo.md): os únicos fatos permitidos, com fonte. Confira antes de qualquer data, nome ou número.
 
 ## 1. Regras que não mudam
@@ -26,7 +27,7 @@ Leia antes de escrever:
   - Outfit para texto, JetBrains Mono para etiquetas e fontes.
   - O anel do "o" do logo como forma decorativa; textura de papel em todos os slides.
   - Wordmark no canto superior esquerdo de todo slide.
-- **Imagens.** Só formas em HTML/SVG. Nada de banco de imagens, nada de imagem de IA. Fotos da OCA (eventos) só se a equipe enviar, e com o filtro `.photo` (veja slides.md).
+- **Imagens.** Todo carrossel tem de 1 a 3 slides com imagem de referência (imagens.md), nesta ordem de preferência: documento ou foto real com licença livre (a prova), foto da própria OCA, ilustração gerada por IA no estilo da casa (o clima). Toda imagem tem crédito visível no slide e linha em `conteudo/creditos.md`. Nunca gere com IA rostos de povos indígenas nem "documentos históricos"; o histórico vem de fonte real.
 - **Texto visível** sem travessões. Use espaço não separável (`&nbsp;`) para evitar palavra sozinha na última linha.
 - **Tamanho.** 1080x1350 (4:5), 6 a 10 slides. O primeiro é o gancho, o último o CTA.
 
@@ -42,11 +43,12 @@ node scripts/render.mjs slides.html out          # -> out/oca-carrossel-01..NN.p
 Requisitos: Node 18+, ffmpeg (para o downscale 2x) e um Chromium (`browser.mjs` encontra um, ou peça `npx playwright install chromium`).
 
 Passos:
-1. **Briefing.** Escreva antes: ângulo, a pergunta, o saber (linha do acervo), a ferramenta de hoje, os 6 a 10 títulos em ordem e a fonte de cada fato.
-2. **Edite `slides.html`.** Troque o texto, reordene, duplique ou apague `<section>`s. Mantenha os ids `s1..sN` em sequência.
-3. **Renderize**, abra todos os PNGs e passe a checklist.
-4. **Legenda** (copy.md), salva como `legenda.txt` junto dos PNGs, com a referência.
-5. **Entregue** os PNGs e a legenda. Anote em `conteudo/carrosseis.md` no repo (data, ângulo, saber, fonte).
+1. **Briefing.** Escreva antes: ângulo, a pergunta, o saber (linha do acervo), a ferramenta de hoje, os 6 a 10 títulos em ordem, a fonte de cada fato e **quais slides levam imagem e de onde ela vem**.
+2. **Imagens.** Pesquise (`node scripts/commons.mjs "<busca>"`, ou a página do Internet Archive) ou gere (ferramenta de imagem do agente, ou `node scripts/gerar-imagem.mjs <nome> <formato> "<assunto>"` com `OPENAI_API_KEY`). Abra cada imagem, descarte as fracas, guarde o `.json` de crédito.
+3. **Edite `slides.html`.** Troque o texto, reordene, duplique ou apague `<section>`s. Mantenha os ids `s1..sN` em sequência.
+4. **Renderize**, abra todos os PNGs e passe a checklist.
+5. **Legenda** (copy.md), salva como `legenda.txt` junto dos PNGs, com a referência e os créditos das imagens.
+6. **Entregue** os PNGs e a legenda. Anote em `conteudo/carrosseis.md` no repo (data, ângulo, saber, fonte).
 
 ## 3. Checklist
 
@@ -54,6 +56,7 @@ Passos:
 - [ ] Há saber ancestral com fonte, ferramenta de hoje e um slide útil.
 - [ ] Cada fato e número está no acervo e tem `.src` no slide; nenhum "primeiro do mundo" sem fonte forte.
 - [ ] Um acento por slide (urucum no antes, luz no hoje); fundos alternados; wordmark no topo.
+- [ ] 1 a 3 imagens, cada uma com crédito visível (ou na legenda, se for só fundo); IA marcada como "Ilustração gerada com IA"; nenhum rosto indígena ou documento histórico gerado por IA.
 - [ ] Nenhum estereótipo; Guarani nomeado corretamente; tom de continuidade.
 - [ ] Nenhuma palavra sozinha na última linha, nada encostando na margem de 80 px, zero travessões.
 - [ ] Arquivos 1080x1350 PNG numerados e `legenda.txt` presente.

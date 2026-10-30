@@ -8,13 +8,15 @@ import { CREME, H, NOITE, TERRA, W } from "./brand";
 // line boil and ink/paper textures from video-shotcraft (Apache-2.0), seeded
 // particles from openmontage (re-implemented, not copied: AGPL).
 
-// Paper/clay grain over the whole frame. The noise seed changes every
-// `every` frames so the texture "lives" without flickering.
-export const Grain = ({ frame, opacity = 0.09, every = 3 }: { frame: number; opacity?: number; every?: number }) => (
+// Paper/clay grain over the whole frame. Static by default: a fixed texture
+// reads as printed paper, while a moving one looks like jitter on a phone and
+// wrecks Instagram's re-encode (noise eats the bitrate). `animated` re-seeds it
+// every `every` frames; keep that for a deliberate "old film" moment only.
+export const Grain = ({ frame, opacity = 0.07, animated = false, every = 4 }: { frame: number; opacity?: number; animated?: boolean; every?: number }) => (
   <AbsoluteFill style={{ pointerEvents: "none", mixBlendMode: "overlay", opacity }}>
     <svg width={W} height={H}>
       <filter id="grain">
-        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed={Math.floor(frame / every)} stitchTiles="stitch" />
+        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed={animated ? Math.floor(frame / every) : 7} stitchTiles="stitch" />
         <feColorMatrix type="saturate" values="0" />
       </filter>
       <rect width={W} height={H} filter="url(#grain)" />
@@ -28,10 +30,11 @@ export const Vignette = ({ strength = 0.55 }: { strength?: number }) => (
 );
 
 // Hand-drawn wobble for SVG strokes ("line boil"): a displacement filter whose
-// seed changes every 3 frames. Put <BoilDef frame={f}/> in the Stage defs and
-// wrap the drawing in <g filter="url(#boil)">. Turn it off (`on={false}`) during
-// holds you want perfectly still.
-export const BoilDef = ({ frame, on = true, scale = 5 }: { frame: number; on?: boolean; scale?: number }) => (
+// seed changes every 3 frames. NOT for whole scenes: on a phone it reads as
+// shaking. Use it only on one element for a short, meant moment (a memory, a
+// dream, under 1 s), with scale 2 to 3. Put <BoilDef frame={f}/> in the Stage
+// defs and wrap that element in <g filter="url(#boil)">.
+export const BoilDef = ({ frame, on = true, scale = 3 }: { frame: number; on?: boolean; scale?: number }) => (
   <filter id="boil">
     <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" seed={on ? Math.floor(frame / 3) : 0} />
     <feDisplacementMap in="SourceGraphic" scale={on ? scale : 0} />
