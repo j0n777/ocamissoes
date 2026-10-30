@@ -1,0 +1,11 @@
+{
+  "name": "oca-carrossel",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "render": "node scripts/render.mjs slides.html out"
+  },
+  "dependencies": {
+    "playwright": "1.64.0"
+  }
+}

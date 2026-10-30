@@ -1,0 +1,22 @@
+{
+  "name": "oca-shorts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "audio": "node scripts/audio.mjs public/audio",
+    "studio": "npx remotion studio src/index.ts",
+    "still": "bash scripts/render.sh still",
+    "render": "bash scripts/render.sh video",
+    "master": "bash scripts/master.sh"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.538",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.538"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.18",
+    "typescript": "5.9.3"
+  }
+}
