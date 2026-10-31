@@ -63,7 +63,7 @@ export const pickShot = <T,>(frame: number, shots: { from: number; shot: T }[]) 
 
 // Layered rolling hills. `parallax` shifts far layers less when the camera
 // pans (pass cam.x). Colours go from light clay (far) to dark earth (near).
-export const Hills = ({ ground = 1250, era = "antes", parallax = 0 }: { ground?: number; era?: Era; parallax?: number }) => {
+export const Hills = ({ ground = 1250, era = "antes", parallax = 0, capim, luzes }: { ground?: number; era?: Era; parallax?: number; capim?: number; luzes?: number }) => {
   const layers = era === "antes" ? [ARGILA, BARRO, "#6b3c19"] : ["#3b2414", "#2f1c0f", "#26160b"];
   return (
     <g>
@@ -78,6 +78,8 @@ export const Hills = ({ ground = 1250, era = "antes", parallax = 0 }: { ground?:
         return <polygon key={k} points={`-1400,3000 ${pts.join(" ")} 2600,3000`} fill={c} />;
       })}
       <rect x={-1400} y={ground} width={4000} height={2000} fill={era === "antes" ? TERRA : "#1c1008"} />
+      {luzes !== undefined && <LuzesLonge frame={luzes} ground={ground} />}
+      {capim !== undefined && <Capim frame={capim} ground={ground} color={era === "antes" ? "#6b3c19" : "#3b2414"} />}
     </g>
   );
 };
@@ -411,5 +413,117 @@ export const OcaModerna = ({ x, ground, w = 460, h = 280, lit = 1 }: { x: number
       ))}
       <path d={`M ${x - 40} ${ground} L ${x - 40} ${ground - 90} Q ${x} ${ground - 124} ${x + 40} ${ground - 90} L ${x + 40} ${ground} Z`} fill={CREME} opacity={0.9} />
     </g>
+  );
+};
+
+// ---------------------------------------------------------------- camera keys
+
+// Shot sizes over time: the camera goes TO the element that is telling the
+// story (wide, medium, close) instead of a barely visible slow push. Pattern
+// (from bang-motion, MIT): hold, one move per beat, hold. Zoom interpolates in
+// log space so it feels even; while holding, a slow push (up to 3%) keeps the
+// frame alive. Keys: { at, cam, dur } with `at` = start of the move.
+export type CamKey = { at: number; cam: Cam; dur?: number };
+const mixCam = (a: Cam, b: Cam, t: number): Cam => ({
+  x: lerp(a.x, b.x, t),
+  y: lerp(a.y, b.y, t),
+  zoom: Math.exp(lerp(Math.log(a.zoom), Math.log(b.zoom), t)),
+});
+const pushed = (c: Cam, frames: number): Cam => ({ ...c, zoom: c.zoom * (1 + Math.min(0.03, Math.max(0, frames) * 0.0005)) });
+export const camera = (f: number, keys: CamKey[]): Cam => {
+  let cur = keys[0].cam;
+  let holdFrom = keys[0].at;
+  for (const k of keys.slice(1)) {
+    if (f < k.at) break;
+    const start = pushed(cur, k.at - holdFrom);
+    const dur = k.dur ?? 20;
+    if (f < k.at + dur) {
+      const t = clamp01((f - k.at) / dur);
+      return mixCam(start, k.cam, t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    }
+    cur = k.cam;
+    holdFrom = k.at + dur;
+  }
+  return pushed(cur, f - holdFrom);
+};
+
+// ---------------------------------------------------------------- scenery life
+
+// Grass tufts along the ground, swaying slowly (each with its own phase).
+export const Capim = ({ frame, ground, from = -200, to = 1300, count = 26, seed = 8, color = "#6b3c19" }: { frame: number; ground: number; from?: number; to?: number; count?: number; seed?: number; color?: string }) => (
+  <g stroke={color} strokeWidth={5} strokeLinecap="round" fill="none">
+    {Array.from({ length: count }, (_, i) => {
+      const x = from + hash01(i, seed) * (to - from);
+      const h = 22 + hash01(i, seed + 1) * 26;
+      const sway = Math.sin(frame / 38 + i * 1.7) * 7;
+      return (
+        <g key={i}>
+          <path d={`M ${x} ${ground} q ${sway * 0.4} ${-h * 0.6} ${sway} ${-h}`} />
+          <path d={`M ${x + 6} ${ground} q ${sway * 0.5 + 4} ${-h * 0.5} ${sway + 10} ${-h * 0.8}`} />
+        </g>
+      );
+    })}
+  </g>
+);
+
+// Smoke rising from a point in soft puffs (fogueira, a chimney).
+export const Fumaca = ({ x, y, frame, count = 6, color = PALHA }: { x: number; y: number; frame: number; count?: number; color?: string }) => (
+  <g>
+    {Array.from({ length: count }, (_, i) => {
+      const life = (frame / 90 + i / count) % 1;
+      return <circle key={i} cx={x + Math.sin(life * 4 + i) * 18 + life * 40} cy={y - life * 260} r={14 + life * 34} fill={color} opacity={0.22 * Math.sin(Math.PI * life)} />;
+    })}
+  </g>
+);
+
+// A small flock crossing the sky between frames `de` and `ate`.
+export const Passaros = ({ frame, de, ate, y = 520, from = -150, to = 1250, count = 4 }: { frame: number; de: number; ate: number; y?: number; from?: number; to?: number; count?: number }) => {
+  const t = (frame - de) / (ate - de);
+  if (t < 0 || t > 1) return null;
+  return (
+    <g>
+      {Array.from({ length: count }, (_, i) => {
+        const x = lerp(from, to, t) - i * 46 - (i % 2) * 20;
+        const by = y + (i % 2 ? 30 : 0) + Math.sin(frame / 18 + i) * 6;
+        const flap = Math.sin(frame / 4 + i) * 12;
+        return <path key={i} d={`M ${x - 24} ${by + flap} Q ${x - 10} ${by - 6} ${x} ${by} Q ${x + 10} ${by - 6} ${x + 24} ${by + flap}`} stroke={TERRA} strokeWidth={5} fill="none" strokeLinecap="round" />;
+      })}
+    </g>
+  );
+};
+
+// Far town lights on the hills ("hoje"): a few dots that breathe slowly.
+export const LuzesLonge = ({ frame, ground, count = 14, seed = 11 }: { frame: number; ground: number; count?: number; seed?: number }) => (
+  <g>
+    {Array.from({ length: count }, (_, i) => {
+      const x = -100 + hash01(i, seed) * 1300;
+      const y = ground - 70 - hash01(i, seed + 1) * 90;
+      return <circle key={i} cx={x} cy={y} r={3 + hash01(i, seed + 2) * 3} fill={LUZ} opacity={0.35 + 0.35 * Math.sin(frame / (30 + hash01(i, seed + 3) * 30) + i)} />;
+    })}
+  </g>
+);
+
+// Background brand shape: a huge dashed ring (the logo "o") turning very
+// slowly behind the sky, 2 layers for parallax. Background motion that never
+// competes with the subject.
+export const AnelFundo = ({ frame, x = 540, y = 600, r = 520, color = LUZ }: { frame: number; x?: number; y?: number; r?: number; color?: string }) => (
+  <g opacity={0.12}>
+    <circle cx={x} cy={y} r={r} fill="none" stroke={color} strokeWidth={10} strokeDasharray="40 30" transform={`rotate(${frame * 0.4} ${x} ${y})`} />
+    <circle cx={x} cy={y} r={r * 0.72} fill="none" stroke={color} strokeWidth={6} strokeDasharray="12 22" transform={`rotate(${-frame * 0.25} ${x} ${y})`} />
+  </g>
+);
+
+// A label that lives in the world (diegetic): it moves and scales with the
+// camera, next to the thing it names.
+// Pass the camera `zoom` so the text keeps the same size on screen (about
+// `size` px) while its position follows the world.
+export const RotuloMundo = ({ x, y, frame, at, children, color = PALHA, size = 28, zoom = 1 }: { x: number; y: number; frame: number; at: number; children: string; color?: string; size?: number; zoom?: number }) => {
+  const t = easeOut(clamp01((frame - at) / 14));
+  if (t <= 0) return null;
+  size = size / zoom;
+  return (
+    <text x={x} y={y + (1 - t) * 12} textAnchor="middle" fontFamily='"JetBrains Mono", monospace' fontWeight={600} fontSize={size} letterSpacing={size * 0.2} fill={color} opacity={t}>
+      {children.toUpperCase()}
+    </text>
   );
 };

@@ -58,3 +58,14 @@ export const Sfx = ({ name, at = 0, volume = 0.8, length = 90 }: { name: SfxName
     </Sequence>
   );
 };
+
+// Recorded narration (a person's voice, recorded by the team: no generated
+// voices). Put the file in public/audio/vo/<name>.wav; run
+// `node scripts/pausas-vo.mjs public/audio/vo/<name>.wav` to get the frame of
+// every sentence and paragraph, and place the beats on those frames.
+// Music under a voice drops to about 0.12 (18 to 20 dB below the voice).
+export const Locucao = ({ name, at = 0, volume = 1 }: { name: string; at?: number; volume?: number }) => (
+  <Sequence from={at} layout="none">
+    <Audio src={staticFile(`audio/vo/${name}`)} volume={volume} />
+  </Sequence>
+);

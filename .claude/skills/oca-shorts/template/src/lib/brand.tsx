@@ -79,12 +79,16 @@ export const Label = ({
       </span>
     ));
   }
-  const tin = progress(frame, at, 14);
+  // Asymmetric rhythm: in slower and firm (18 frames, settle, blur clearing
+  // while it rises), out fast (9 frames, cubic collapse). From bang-motion (MIT).
+  const tin = progress(frame, at, 18);
   if (tin <= 0) return null;
-  const tout = out === undefined ? 0 : progress(frame, out, 8);
+  const tout = out === undefined ? 0 : progress(frame, out, 9);
   if (tout >= 1) return null;
   const s = settle(tin) * (1 - tout * tout * tout);
   const rot = (1 - easeOut(tin)) * -4;
+  const blur = (1 - easeOut(Math.min(1, tin * 1.6))) * 10 + tout * 6;
+  const rise = (1 - easeOut(tin)) * 26;
   return (
     <div style={{ position: "absolute", left: MARGIN, right: MARGIN, top: y, transform: "translateY(-50%)", display: "flex", justifyContent: "center" }}>
       <div
@@ -98,7 +102,8 @@ export const Label = ({
           color,
           textAlign: "center",
           maxWidth: W - 2 * MARGIN,
-          transform: `scale(${s}) rotate(${rot}deg)`,
+          transform: `translateY(${rise}px) scale(${s}) rotate(${rot}deg)`,
+          filter: blur > 0.2 ? `blur(${blur.toFixed(1)}px)` : undefined,
           padding: bar ? "18px 34px 22px" : 0,
           background: bar,
           clipPath: bar ? "polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%)" : undefined,

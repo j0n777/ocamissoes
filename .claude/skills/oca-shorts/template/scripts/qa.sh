@@ -2,6 +2,7 @@
 # Final gate before delivery. Renders the composition, masters the loudness,
 # checks the file and the caption, and builds a contact sheet to look at.
 #   bash scripts/qa.sh <CompositionId>
+#   MAX_S=60 bash scripts/qa.sh <Id>      # narrated explainer (default 15 to 25.5 s)
 # Output: out/<Id>-final.mp4, out/<Id>-contato.png and a PASS/FAIL report.
 # The caption is read from src/videos/<Id>.legenda.txt (or out/<Id>.legenda.txt).
 set -uo pipefail
@@ -25,7 +26,8 @@ DUR=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$F")
 AUD=$(ffprobe -v error -select_streams a -show_entries stream=codec_type -of csv=p=0 "$F" | head -1)
 [ "$W" = 1080 ] && [ "$H" = 1920 ] && ok "1080x1920" || ko "tamanho ${W}x${H}"
 [ "$FPS" = "30/1" ] && ok "30 fps" || ko "fps $FPS"
-awk -v d="$DUR" 'BEGIN{exit !(d>=15 && d<=25.5)}' && ok "duração ${DUR}s" || ko "duração ${DUR}s (15 a 25 s)"
+MIN_S="${MIN_S:-15}"; MAX_S="${MAX_S:-25.5}"
+awk -v d="$DUR" -v a="$MIN_S" -v b="$MAX_S" 'BEGIN{exit !(d>=a && d<=b)}' && ok "duração ${DUR}s" || ko "duração ${DUR}s (${MIN_S} a ${MAX_S} s)"
 [ "$AUD" = audio ] && ok "tem áudio" || ko "sem áudio"
 LOUD=$(ffmpeg -hide_banner -nostats -i "$F" -af ebur128=peak=true -f null - 2>&1)
 I=$(echo "$LOUD" | grep -E "^\s+I:" | tail -1 | awk '{print $2}')

@@ -99,9 +99,10 @@ type Props = {
   prop?: "none" | "cesto" | "tablet" | "semente" | "cuia" | "celular" | "livro";
   view?: "perfil" | "frente" | "costas";
   glow?: number; // 0..1 brightness of the tablet screen / visor
+  sombra?: number; // ground y for the contact shadow (default: pose.y); 0 hides it
 };
 
-export const Figure = ({ pose, look = "povo", size = 280, depth = 0, prop = "none", glow = 0.6, view = "perfil" }: Props) => {
+export const Figure = ({ pose, look = "povo", size = 280, depth = 0, prop = "none", glow = 0.6, view = "perfil", sombra }: Props) => {
   const s = size / 260;
   const T = 70 * s, UL = 54 * s, LL = 54 * s, UA = 46 * s, FA = 44 * s, HR = 30 * s, SW = 24 * s;
   const flat = view !== "perfil"; // seen from the front or the back
@@ -146,8 +147,15 @@ export const Figure = ({ pose, look = "povo", size = 280, depth = 0, prop = "non
       <path d={`M ${hd[0] - HR * 1.08} ${hd[1] + 4 * s} A ${HR * 1.08} ${HR * 1.08} 0 0 1 ${hd[0] + HR * 1.08} ${hd[1] + 4 * s} Z`} fill={TERRA} stroke={TERRA} strokeWidth={7 * s} />
     ) : null;
 
+  // Contact shadow on the ground: keeps the figure from "floating" (smaller
+  // and lighter when the feet leave the ground).
+  const groundY = sombra ?? pose.y;
+  const lift = Math.max(0, groundY - pose.y);
+  const shadow = sombra === 0 ? null : <ellipse cx={pose.x} cy={groundY} rx={(62 * s) / (1 + lift / 120)} ry={11 * s} fill={TERRA} opacity={0.28 / (1 + lift / 120)} />;
+
   return (
     <g>
+      {shadow}
       {parts.map((p, i) => (
         <polyline key={`o${i}`} points={pts(p)} fill="none" stroke={TERRA} strokeWidth={SW + 8 * s} strokeLinecap="round" strokeLinejoin="round" />
       ))}

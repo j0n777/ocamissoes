@@ -43,6 +43,22 @@ Regras para todo vídeo parecer da OCA, qualquer que seja o formato. Na dúvida,
 - Gramática de planos: contínua (padrão, com push-in leve) ou cortes secos a cada 1,2 a 2,7 s (`pickShot`), alternando aberto e fechado. Nunca tremida de câmera.
 - O último quadro é a capa: mostra a ponte e a frase final.
 
+## Câmera: planos, não miniatura
+
+Lições do bang-motion (MIT, `references/tecnicas.md` no repo), adaptadas ao 9:16:
+- **A câmera vai até o elemento que está contando a história.** "Dar zoom" é trocar o tamanho do plano (aberto, médio, close, detalhe) a cada batida, não um push de 5% que ninguém vê. Padrão: segura 0,5 s, um movimento por batida, segura (com um push lento de até 3% para o quadro não morrer). Use `camera(f, chaves)` de `lib/world.tsx`: o zoom interpola em escala logarítmica.
+- **Nada de miniatura.** Personagem pequeno no meio de muito chão vazio parece slide. No plano mais aberto a figura ocupa uns 25 a 30% da altura; nos closes, 45 a 60%. Zoom mínimo de trabalho 1,25 (o 1,18 da base só no portal).
+- **Close não corta personagem.** Se o close é no objeto (painel, QR, balões), enquadre de modo que o personagem fique inteiro, ou fora de vez. Meio corpo na borda é erro.
+- **Zona do texto.** Nos closes, nenhum objeto do mundo entra na faixa de tela acima de y 450, onde ficam a etiqueta de era e a frase.
+- **Não troque de lugar à toa.** Frase nova não exige cena nova: mude a ação ou o plano no mesmo lugar. Troca de lugar dentro da mesma era: `Deslize` (96 px + desfoque, ver `fx.tsx`). Entre eras: o `Portal`, uma vez por vídeo.
+- **Variar o tamanho:** dois planos seguidos do mesmo tamanho ficam chapados.
+
+## Vida no cenário
+
+- Cada cena tem pelo menos **6 coisas se movendo devagar** além dos personagens: capim (`Capim`), pássaros cruzando (`Passaros`), fumaça (`Fumaca`), folhas do erval, nuvens, vaga-lumes, brasas, luzes da cidade ao longe no "hoje" (`LuzesLonge`), o anel da marca girando no fundo (`AnelFundo`), dados subindo, sensores pulsando. No Ponte, `Hills capim` e `Hills luzes` já colocam parte disso.
+- O fundo nunca fica parado, mas nunca compete com o personagem: movimentos lentos (ciclos de 1,5 s ou mais), cores do lado escuro da paleta, opacidade baixa.
+- **Personagem vivo parado:** as ações já somam uma respiração lenta (tronco, cabeça e braços, ciclos de 1,7 a 2,3 s, fase própria por personagem) e a **sombra de contato** sob os pés. Nunca desligue a sombra (`sombra={0}`) a não ser que o personagem esteja de fato no ar ou sobre outro objeto.
+
 ## Movimento
 
 - Tudo com `easeInOut`, `easeOut` ou `settle`. Só máquinas (satélite, drone, dados) andam linear.
@@ -58,12 +74,15 @@ Regras para todo vídeo parecer da OCA, qualquer que seja o formato. Na dúvida,
 
 ## Texto
 
+- **Ritmo assimétrico:** o texto entra firme em 18 quadros (mola, sobe 26 px e o desfoque some) e sai rápido em 9 quadros. Já está no `Label`.
+- **No máximo dois níveis de texto por quadro** (etiqueta de era + frase). O rótulo do saber agora vive **no mundo** (`RotuloMundo`, ao lado do objeto e andando com a câmera), não como terceiro nível na tela.
+
 - **Etiqueta de era**: `EraTag`, mono, maiúsculas, com traço no acento da era (`HÁ SÉCULOS`, `EM 1700`, `HOJE`).
 - **Gancho**: `Label bar={URUCUM}`, até 5 palavras, uma pergunta, na tela até 0,5 s.
 - **Frase**: `Label`, Outfit 700, minúsculas, 64 a 78 px, até 6 palavras, termina com ponto. A última palavra importante pode ir em luz (no "hoje").
-- **Etiqueta pequena**: `Label mono size 26` em palha, para nomear o saber (`EIXU · PLÊIADES`).
+- **Rótulo do saber**: `RotuloMundo` em palha (terra de dia), no mundo, ao lado do objeto (`EIXU · PLÊIADES`). Passe o `zoom` da câmera para o tamanho na tela ficar constante.
 - Entrada com mola e giro leve; saída com colapso rápido, nunca um fade lento.
-- No máximo 3 textos ao mesmo tempo. Nunca hashtag, link, emoji ou travessão na tela.
+- No máximo 2 textos na tela ao mesmo tempo (mais o rótulo no mundo). Nunca hashtag, link, emoji ou travessão na tela.
 
 ## Efeitos (de outros projetos, ver `references/tecnicas.md` no repo)
 

@@ -8,8 +8,8 @@ Só escreva uma cena à mão (como `PleiadesIA.tsx`) quando nenhuma combinação
 
 1. Rode o motor de ideação (ideacao.md) e confira o saber no acervo.
 2. Escolha `antes.cena` e `hoje.cena` nos menus (seções 2 e 3).
-3. Crie `src/videos/<Id>.ts` copiando `ErvaRastreio.ts` e preencha.
-4. Registre a ficha em `src/videos/index.ts` (`PONTES`).
+3. Crie `src/videos/<Id>.ts` copiando `ErvaRastreio.ts` ou `PrensaIA.ts` e preencha.
+4. Registre a ficha em `src/videos/index.ts` (`PONTES`) e rode `node scripts/compara-fichas.mjs`: se aparecer ATENÇÃO, o vídeo novo é parecido demais com um dos 3 anteriores; troque a cena, o rótulo ou a pergunta.
 5. Escreva a legenda em `src/videos/<Id>.legenda.txt` (legenda.md).
 6. `npx tsc --noEmit`, depois stills de conferência:
    ```bash
@@ -40,6 +40,8 @@ Só escreva uma cena à mão (como `PleiadesIA.tsx`) quando nenhuma combinação
 | `ia-texto` | Uma pergunta e a resposta da IA aparecem em balões; os dados sobem para a nuvem | não | IA generativa, escrita, tradução, atendimento, registro do saber |
 | `rede` | A OCA moderna acende; uma rede de conexões se desenha entre pessoas e empresas | não | ecossistema, eventos, parcerias, a própria OCA |
 
+Cada cena já traz o **plano de câmera** (aberto, médio, close, detalhe a cada batida, voltando à base antes do portal), a **vida do cenário** (capim, pássaros, fumaça, luzes ao longe, o anel da marca no fundo) e o lugar do **rótulo no mundo** (ao lado do objeto do saber). Não precisa mexer em nada disso na ficha.
+
 Qualquer "antes" combina com qualquer "hoje". Combinações fortes: `ceu`+`satelite`, `lua`+`sensor`, `erval`+`rastreio`, `prensa`+`ia-texto`, `fogueira`+`rede`.
 
 ## 4. Campos e limites (checados no render)
@@ -49,7 +51,7 @@ Qualquer "antes" combina com qualquer "hoje". Combinações fortes: `ceu`+`satel
 | `id` | PascalCase, sem espaço (vira o nome da composição) |
 | `pergunta` | até 5 palavras, termina com `?` (gancho em barra urucum) |
 | `antes.tag` | opcional; padrão `HÁ SÉCULOS`. Use `EM 1700`, `NAS MISSÕES` quando a fonte der a época |
-| `antes.rotulo` | opcional; até 3 palavras, nomeia o saber |
+| `antes.rotulo` | opcional; até 3 palavras, nomeia o saber; aparece no mundo, ao lado do objeto |
 | `antes.frase` | até 6 palavras, termina com ponto |
 | `hoje.frase` | até 6 palavras, termina com ponto |
 | `hoje.painel` | opcional; até 3 palavras (só `satelite`) |
@@ -102,6 +104,6 @@ Regras:
 ## 6. Criar uma opção nova no menu
 
 1. Acrescente o nome em `CenaAntes` ou `CenaHoje` em `src/formatos/Ponte.tsx`.
-2. Escreva a função no registro `ANTES` ou `HOJE`, retornando `mundo`, `atores`, `sons`, `foco` (onde o portal fecha, em coordenadas de tela) e, se precisar, `hora` e `defs`.
+2. Escreva a função no registro `ANTES` ou `HOJE`, retornando `mundo`, `atores`, `sons`, `foco` (onde o portal fecha, em coordenadas de tela), `cams` (plano de câmera; no "antes", termine em `CAM` até o quadro 262), `rotuloEm` (onde o rótulo vive no mundo) e, se precisar, `hora` e `defs`.
 3. No "hoje", o Inovador termina em pé em x 400 até o quadro 466 (o encontro depende disso).
 4. Faça uma ficha de teste, rode `qa.sh`, e acrescente a linha na tabela deste arquivo.

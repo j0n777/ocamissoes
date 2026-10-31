@@ -4,7 +4,7 @@ import { Fonts, H, Label, LUZ, MONO, PALHA, TERRA, URUCUM, W } from "../lib/bran
 import { CARRY, Figure, FRENTE, FRENTE_HOLD, FRENTE_OPEN, FRENTE_UP, FRENTE_WAVE, HOLD, KNEEL, LOOK_UP, type Pose, SIT, STAND, WAVE, walk } from "../lib/figure";
 import { Grain, Particles, Portal } from "../lib/fx";
 import { Antena, Celular, ChatBalao, CircuitRoots, DataMotes, Drone, EstacaoClima, GlowDef, Grafico, HoloPanel, Lampada, MapPin, Notebook, Nuvem, PainelSolar, QRCode, Rede, Satellite, Sensor, Trator } from "../lib/tech";
-import { Canoa, Chuva, Cuia, Ema, Erval, Fogueira, Hills, Livro, Moon, Nuvens, Oca, OcaModerna, Pleiades, Prensa, QueroQuero, Rio, Roca, Ruina, SacoErva, Sol, Sprout, Stage, Stars, type Era, type Hora, type Plano, shot } from "../lib/world";
+import { Canoa, Capim, Chuva, Cuia, Ema, Erval, Fogueira, Fumaca, Hills, Passaros, Livro, Moon, Nuvens, Oca, OcaModerna, Pleiades, Prensa, QueroQuero, Rio, Roca, Ruina, SacoErva, Sol, Sprout, Stage, Stars, type Era, type Hora, type Plano, shot } from "../lib/world";
 import { type Faz, ator, AtorFig } from "../lib/acoes";
 
 // The visual library: model sheets of everything the skill can draw, to pick
@@ -239,17 +239,22 @@ export const BibNatureza = () => {
     <Sheet title="natureza" hora="dia">
       <Nuvens frame={f} y={260} count={4} />
       <Cap x={540} y={520} color={TERRA}>NUVENS (DIA)</Cap>
+      <Passaros frame={f} de={0} ate={120} y={640} />
       <Hills ground={1000} era="antes" />
+      <Capim frame={f} ground={1000} />
       <Ema x={260} ground={980} size={1} frame={f} />
       <Cap x={260} y={1040}>EMA</Cap>
       <QueroQuero x={620} y={980} size={1.6} />
       <QueroQuero x={760} y={700} size={1.3} voando frame={f} />
       <Cap x={680} y={1040}>QUEROQUERO (PARADO E VOANDO)</Cap>
+      <Cap x={540} y={590} color={TERRA}>PASSAROS · CAPIM (CHÃO)</Cap>
       <rect x={0} y={1120} width={W} height={800} fill="#3b2414" />
       <Nuvens frame={f} y={1180} count={3} tone="noite" seed={5} />
       <Chuva frame={f} box={[0, 1200, 1080, 1860]} count={60} />
       <Erval x={540} ground={1800} size={0.9} frame={f} />
-      <Cap x={540} y={1880} color={PALHA}>CHUVA · NUVENS (NOITE)</Cap>
+      <Fogueira x={180} ground={1800} frame={f} size={0.7} />
+      <Fumaca x={180} y={1720} frame={f} />
+      <Cap x={540} y={1880} color={PALHA}>CHUVA · NUVENS (NOITE) · FOGUEIRA + FUMACA</Cap>
     </Sheet>
   );
 };
