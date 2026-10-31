@@ -1,6 +1,6 @@
 # Arquétipos de slide
 
-Todos estão em `template/slides.html`. Copie uma `<section>`, troque o texto e mantenha os ids `s1..sN` em sequência.
+Os estilos ficam em `template/assets/oca.css`, compartilhado por todos os carrosséis. Os exemplos de cada tipo estão em `template/slides.html` e `template/exemplo-suarez.html`. Copie uma `<section>`, troque o texto e mantenha os ids `s1..sN` em sequência.
 
 Base:
 - `.slide` tem 1080x1350, padding de 80 px e é uma coluna: `margin-top: auto` empurra o título para o terço de baixo.
@@ -20,6 +20,8 @@ Base:
 | Lista | `s-lista` | título no alto e até 3 cartões numerados em mono | Algo útil: passos, ferramentas, perguntas |
 | Imagem | `s-imagem` | imagem chanfrada saindo pela direita (720 px de altura), título, apoio e crédito | A prova: documento, lugar, objeto. Ver imagens.md |
 | Fundo com imagem | `.bg-img` dentro de qualquer slide | imagem em duotone atrás do texto, com degradê barro | Capa ou reflexão com clima (crédito na legenda) |
+| Número | `s-numero` | número de hoje gigante em luz, barra medidora (`<i style="width: 33.9%">`), título de leitura, apoio com a pesquisa e `.src` | O "hoje" com dado real (pilar Missões em dados). Exemplo em exemplo-suarez.html |
+| Pergunta | `s-pergunta` | uma pergunta enorme e o ícone de comentário com um pedido curto | Penúltimo slide, para abrir os comentários. Exemplo em exemplo-suarez.html |
 | CTA | `s-cta` | wordmark grande, título, barra creme chanfrada com @ocamissoes e seta | Sempre o último |
 
 ## Criar um arquétipo novo

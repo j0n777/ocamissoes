@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { AbsoluteFill } from "remotion";
 import { clamp01, easeOut, hash01, lerp } from "./anim";
-import { ARGILA, BARRO, CREME, Fonts, H, MATE, NOITE, PALHA, TERRA, URUCUM, W } from "./brand";
+import { ARGILA, BARRO, CREME, Fonts, H, LUZ, MATE, NOITE, PALHA, TERRA, URUCUM, W } from "./brand";
 
 // The Missões landscape in flat 2D: rolling fields (coxilhas), the oca, the
 // stone mission facade, the sky that served as a calendar. Everything is SVG,
@@ -309,3 +309,107 @@ export const Cuia = ({ x, y, size = 1, steam = 0 }: { x: number; y: number; size
     <ellipse cx={x} cy={y - 80 * size} rx={75 * size} ry={16 * size} fill="#4d6328" stroke={TERRA} strokeWidth={6} />
   </g>
 );
+
+// Drifting clouds (slow, never jittery). `tone` "dia" for light clouds,
+// "noite" for dark ones.
+export const Nuvens = ({ frame, y = 300, count = 4, tone = "dia", seed = 2 }: { frame: number; y?: number; count?: number; tone?: "dia" | "noite"; seed?: number }) => (
+  <g opacity={tone === "dia" ? 0.85 : 0.5}>
+    {Array.from({ length: count }, (_, i) => {
+      const w = 160 + hash01(i, seed) * 160;
+      const x = ((hash01(i, seed + 1) * 1600 + frame * (0.3 + hash01(i, seed + 2) * 0.3)) % 1800) - 400;
+      const cy = y + hash01(i, seed + 3) * 160;
+      const c = tone === "dia" ? CREME : "#3b2414";
+      return (
+        <g key={i}>
+          <ellipse cx={x} cy={cy} rx={w / 2} ry={w * 0.16} fill={c} />
+          <circle cx={x - w * 0.15} cy={cy - w * 0.1} r={w * 0.2} fill={c} />
+          <circle cx={x + w * 0.12} cy={cy - w * 0.14} r={w * 0.24} fill={c} />
+        </g>
+      );
+    })}
+  </g>
+);
+
+// Rain: slanted streaks falling at a steady speed (motion, not flicker).
+export const Chuva = ({ frame, box = [-200, -200, 1300, 1300], count = 70, seed = 4 }: { frame: number; box?: [number, number, number, number]; count?: number; seed?: number }) => (
+  <g stroke={CREME} strokeWidth={3} strokeLinecap="round" opacity={0.35}>
+    {Array.from({ length: count }, (_, i) => {
+      const [x0, y0, x1, y1] = box;
+      const h = y1 - y0;
+      const y = y0 + ((hash01(i, seed) * h + frame * 28) % h);
+      const x = x0 + hash01(i, seed + 1) * (x1 - x0) - (y - y0) * 0.15;
+      return <line key={i} x1={x} y1={y} x2={x - 8} y2={y + 46} />;
+    })}
+  </g>
+);
+
+// Rhea (ema): the bird of the Guarani winter constellation. `walk` 0..1 phase.
+export const Ema = ({ x, ground, size = 1, facing = 1, frame = 0 }: { x: number; ground: number; size?: number; facing?: 1 | -1; frame?: number }) => {
+  const s = size, step = Math.sin(frame / 6) * 0.25;
+  const leg = (a: number, dx: number) => `M ${x + dx * s} ${ground - 90 * s} l ${Math.sin(a) * 40 * s * facing} ${Math.cos(a) * 90 * s}`;
+  return (
+    <g>
+      <path d={leg(step + 0.15, -12)} stroke={TERRA} strokeWidth={8 * s} strokeLinecap="round" />
+      <path d={leg(-step - 0.15, 12)} stroke={TERRA} strokeWidth={8 * s} strokeLinecap="round" />
+      <ellipse cx={x} cy={ground - 120 * s} rx={70 * s} ry={45 * s} fill={PALHA} stroke={TERRA} strokeWidth={6} />
+      <path d={`M ${x + 40 * s * facing} ${ground - 140 * s} q ${30 * s * facing} ${-60 * s} ${20 * s * facing} ${-120 * s}`} stroke={PALHA} strokeWidth={16 * s} fill="none" strokeLinecap="round" />
+      <path d={`M ${x + 40 * s * facing} ${ground - 140 * s} q ${30 * s * facing} ${-60 * s} ${20 * s * facing} ${-120 * s}`} stroke={TERRA} strokeWidth={4} fill="none" strokeLinecap="round" opacity={0.4} />
+      <circle cx={x + 62 * s * facing} cy={ground - 262 * s} r={14 * s} fill={PALHA} stroke={TERRA} strokeWidth={5} />
+      <path d={`M ${x + 74 * s * facing} ${ground - 262 * s} l ${20 * s * facing} ${4 * s}`} stroke={TERRA} strokeWidth={6 * s} strokeLinecap="round" />
+    </g>
+  );
+};
+
+// Quero-quero (southern lapwing), the bird of the pampa, standing or flying.
+export const QueroQuero = ({ x, y, size = 1, voando = false, frame = 0, facing = 1 }: { x: number; y: number; size?: number; voando?: boolean; frame?: number; facing?: 1 | -1 }) => {
+  const s = size;
+  if (voando) {
+    const flap = Math.sin(frame / 4) * 22 * s;
+    return <path d={`M ${x - 46 * s} ${y + flap} Q ${x - 20 * s} ${y - 10 * s} ${x} ${y} Q ${x + 20 * s} ${y - 10 * s} ${x + 46 * s} ${y + flap}`} stroke={TERRA} strokeWidth={6 * s} fill="none" strokeLinecap="round" />;
+  }
+  return (
+    <g transform={`translate(${x} ${y}) scale(${facing * s} ${s})`}>
+      <line x1={-4} y1={0} x2={-8} y2={-34} stroke={TERRA} strokeWidth={4} />
+      <line x1={6} y1={0} x2={4} y2={-34} stroke={TERRA} strokeWidth={4} />
+      <ellipse cx={0} cy={-50} rx={30} ry={18} fill="#8a8f86" stroke={TERRA} strokeWidth={4} />
+      <ellipse cx={8} cy={-44} rx={18} ry={10} fill={CREME} />
+      <circle cx={26} cy={-72} r={12} fill="#8a8f86" stroke={TERRA} strokeWidth={4} />
+      <path d={`M 22 -82 q -18 -6 -26 -2`} stroke={TERRA} strokeWidth={4} fill="none" />
+      <path d={`M 36 -72 l 14 3`} stroke={TERRA} strokeWidth={5} strokeLinecap="round" />
+    </g>
+  );
+};
+
+// A bag of erva-mate (a product of the region); `tag` shows a QR label (hoje).
+export const SacoErva = ({ x, ground, size = 1, tag = false }: { x: number; ground: number; size?: number; tag?: boolean }) => {
+  const s = size;
+  return (
+    <g>
+      <path d={`M ${x - 60 * s} ${ground} q ${-10 * s} ${-80 * s} ${6 * s} ${-150 * s} l ${108 * s} 0 q ${16 * s} ${70 * s} ${6 * s} ${150 * s} Z`} fill={PALHA} stroke={TERRA} strokeWidth={6} strokeLinejoin="round" />
+      <path d={`M ${x - 54 * s} ${ground - 150 * s} q ${54 * s} ${-26 * s} ${108 * s} 0`} fill="none" stroke={TERRA} strokeWidth={6} />
+      <path d={`M ${x - 20 * s} ${ground - 70 * s} q ${20 * s} ${-30 * s} ${40 * s} 0 q ${-20 * s} ${16 * s} ${-40 * s} 0 Z`} fill={MATE} />
+      {tag && <rect x={x + 8 * s} y={ground - 120 * s} width={40 * s} height={40 * s} fill={CREME} stroke={TERRA} strokeWidth={3} />}
+      {tag && [0, 1, 2].map((i) => [0, 1, 2].map((j) => ((i * 3 + j) % 2 === 0 ? <rect key={`${i}${j}`} x={x + (13 + i * 11) * s} y={ground - (115 - j * 11) * s} width={8 * s} height={8 * s} fill={TERRA} /> : null)))}
+    </g>
+  );
+};
+
+// The OCA today: a modern dome (the oca shape) in glass and wood, windows lit
+// in LUZ, the hub where people meet. Use it for the ecosystem and the Mutirão.
+export const OcaModerna = ({ x, ground, w = 460, h = 280, lit = 1 }: { x: number; ground: number; w?: number; h?: number; lit?: number }) => {
+  const l = x - w / 2, r = x + w / 2, top = ground - h;
+  const ribs = [0.2, 0.35, 0.5, 0.65, 0.8];
+  return (
+    <g>
+      <path d={`M ${l} ${ground} C ${l} ${top - h * 0.05}, ${r} ${top - h * 0.05}, ${r} ${ground} Z`} fill="#3b2414" stroke={CREME} strokeWidth={6} />
+      {ribs.map((t) => {
+        const px = lerp(l, r, t);
+        return <path key={t} d={`M ${px} ${ground} Q ${lerp(px, x, 0.35)} ${top + h * 0.1} ${x} ${top + h * 0.02}`} stroke={CREME} strokeWidth={3} fill="none" opacity={0.5} />;
+      })}
+      {[0.28, 0.5, 0.72].map((t, i) => (
+        <rect key={t} x={lerp(l, r, t) - 26} y={ground - h * 0.45} width={52} height={h * 0.3} rx={6} fill={LUZ} opacity={(0.3 + 0.7 * lit) * (i === 1 ? 1 : 0.8)} />
+      ))}
+      <path d={`M ${x - 40} ${ground} L ${x - 40} ${ground - 90} Q ${x} ${ground - 124} ${x + 40} ${ground - 90} L ${x + 40} ${ground} Z`} fill={CREME} opacity={0.9} />
+    </g>
+  );
+};

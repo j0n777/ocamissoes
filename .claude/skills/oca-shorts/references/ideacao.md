@@ -18,7 +18,7 @@ Puxe de pelo menos duas a cada lote:
 
 Escreva cada resposta em uma linha.
 
-1. **Pergunta.** A necessidade humana, em até 4 palavras, que vale nas duas eras. Ruim: "IA é importante". Bom: "quando plantar?", "como guardar o saber?", "como avisar de longe?".
+1. **Pergunta.** A necessidade humana, em até 5 palavras, que vale nas duas eras. Ruim: "IA é importante". Bom: "quando plantar?", "como guardar o saber?", "como avisar de longe?".
 2. **Saber.** A resposta ancestral, tirada do acervo, com fonte. Se não está no acervo, pesquise e acrescente antes (com fonte e data), ou troque o tema.
 3. **Ferramenta.** A resposta de hoje, concreta e visual (satélite, sensor, drone, painel de dados, IA). Prefira ferramentas acessíveis a um empreendedor das Missões.
 4. **Objeto-ponte.** O elemento que aparece nas duas eras e liga as cenas: as Plêiades (céu → satélite), a semente (roça → sensor), a página (imprensa → publicação com IA), a folha de erva-mate (erval → rastreio). Ele é a metáfora; precisa ser desenhável com formas simples.
@@ -66,6 +66,11 @@ Pontos de partida já passados pelo motor. Confira a fonte no acervo antes de us
 | como trabalhar junto? | trabalho coletivo na comunidade | ecossistema de inovação, coworking, redes de empresas | muitas mãos | Mutirão | ninguém inova sozinho. |
 | onde morar e criar? | a oca, casa coletiva; Tava, a casa de pedra | a OCA, casa da inovação | a casa | Herança | a casa mudou. o saber ficou. |
 | como fazer música? | mbaraka e takuapu (inspiração de timbre, nunca canto sagrado) | produção musical digital | o ritmo | Duelo de eras | o mesmo pulso. |
+| onde estamos no mapa? | Suárez e artesãos Guarani: telescópios, 147 eclipses, longitude das missões (acervo §3b) | GPS, satélite | a luneta e o satélite | Ponte (`ceu` + `satelite`) | do céu ao mapa. |
+| faltou ferramenta? | ferro da pedra itacuru, forno de adobe, 100 enxadas para 750 (§3b) | fabricação local, impressão 3D | a enxada | Ponte (cena manual) | fazer o que falta. |
+| como planejar a cidade? | traçado padrão das reduções, praça e fileiras (§3b) | planejamento com dados abertos | a planta da cidade | Herança | a cidade pensada. |
+| como cuidar de todos? | tupambaé, a roça comum para quem não podia plantar (§3b) | cooperativas, compras coletivas | o armazém | Mutirão (`fogueira` + `rede`) | juntos rende mais. |
+| como guardar a semente? | avaxi ete e as guardiãs Mbyá; germinação da erva perdida e reencontrada (§3b) | bancos de sementes, pesquisa aplicada | a semente | Ponte (`lua` + `sensor`) | a semente lembra. |
 
 ## 6. Remix (muitos a partir de um)
 

@@ -8,6 +8,7 @@ description: Cria vídeos curtos verticais (Reels, Shorts, TikTok) para a OCA Mi
 Vídeos curtos que mostram que a inovação sempre esteve nas Missões. Uma pergunta antiga, resolvida com o saber de quem vivia aqui; a mesma pergunta hoje, com satélite, dados e IA. O espectador entende sem som em 3 segundos, e a legenda conta a história com fonte.
 
 Leia antes de criar:
+- [references/fichas.md](references/fichas.md): **o caminho padrão.** Um vídeo Ponte é uma ficha de dados (menus de cenas "antes" e "hoje", textos, fonte); o template faz o resto e confere as regras. Também documenta as ações dos personagens.
 - [references/ideacao.md](references/ideacao.md): o motor de ideias (pergunta, saber, ferramenta, ponte), pontuação e banco de conceitos. Comece aqui.
 - [references/formatos.md](references/formatos.md): os cinco formatos (Ponte, Duelo de eras, Linha do tempo, Herança, Mutirão).
 - [references/biblioteca.md](references/biblioteca.md) e a pasta [biblioteca/](biblioteca/): as folhas prontas de personagens (3 vistas), poses, objetos do "antes", kit do "hoje", céus e planos de câmera. Escolha daqui antes de desenhar algo novo.
@@ -33,7 +34,7 @@ Gere candidatos com o motor de ideacao.md. Depois preencha:
 
 ```
 Formato:    Ponte | Duelo de eras | Linha do tempo | Herança | Mutirão
-Pergunta:   a pergunta de sempre, até 4 palavras ("quando plantar?")
+Pergunta:   a pergunta de sempre, até 5 palavras ("quando plantar?")
 Antes:      o saber ancestral + a linha do acervo que o sustenta
 Hoje:       as ferramentas atuais (genéricas, ou com fonte se tiver número/marca)
 Ponte:      a frase final, até 6 palavras ("mesma pergunta. novas ferramentas.")
@@ -47,7 +48,11 @@ Teste antes de construir: descreva o último quadro em uma frase. Se alguém, se
 
 ## 3. Pipeline
 
-`template/` é um projeto Remotion pronto, com a cena `PleiadesIA` (Ponte, 20 s, aprovada como exemplo), o `FigureSheet` e as 6 folhas da biblioteca (`Bib*`, `bash scripts/biblioteca.sh`).
+`template/` é um projeto Remotion pronto, com:
+- o formato Ponte por ficha (`src/formatos/Ponte.tsx`) e a ficha de exemplo `ErvaRastreio` (`src/videos/`);
+- a cena feita à mão `PleiadesIA` (Ponte, 20 s, a primeira aprovada);
+- o `FigureSheet` e as 9 folhas da biblioteca (`Bib*`, `bash scripts/biblioteca.sh`);
+- `scripts/qa.sh`, o portão final (render, loudness, legenda, folha de contato).
 
 Copie o template; nunca edite no lugar. `SKILL_DIR` é a pasta deste SKILL.md (no repo, `.claude/skills/oca-shorts`).
 
@@ -60,7 +65,10 @@ npm install
 npm run audio                     # gera public/audio/music/*.wav e public/audio/sfx/*.wav (~15 s)
 ```
 
-1. **Escreva a cena** em `src/scenes/<Nome>.tsx`, partindo de `PleiadesIA.tsx`. Ponha o briefing e o mapa de beats no comentário do topo.
+**Caminho padrão (formato Ponte): ficha.** Siga fichas.md: crie `src/videos/<Id>.ts` e `<Id>.legenda.txt`, registre em `src/videos/index.ts`, confira 4 stills e rode `bash scripts/qa.sh <Id>`. Nada de código de cena.
+
+**Caminho manual (outros formatos ou uma cena nova):**
+1. **Escreva a cena** em `src/scenes/<Nome>.tsx`, partindo de `PleiadesIA.tsx`, usando as ações (`lib/acoes.tsx`) e as peças da biblioteca. Ponha o briefing e o mapa de beats no comentário do topo.
 2. **Registre** em `src/Root.tsx` com `DURATION` e `FPS`. Rode `npx tsc --noEmit`.
 3. **Stills primeiro** (uns 2 s cada): abertura, meio do "antes", o portal, meio do "hoje" e o quadro final.
    ```bash
@@ -68,20 +76,22 @@ npm run audio                     # gera public/audio/music/*.wav e public/audio
    bash scripts/render.sh still <Nome> <quadro>
    ```
    Abra os PNGs e passe a checklist. Corrija e repita.
-4. **Render completo** (2D é rápido: a cena modelo de 20 s levou ~2 min em CPU), em segundo plano:
-   ```bash
-   bash scripts/render.sh video <Nome> out/<nome>.mp4
-   bash scripts/master.sh out/<nome>.mp4          # -> out/<nome>-final.mp4 a -14 LUFS
-   ```
-5. **Verifique o arquivo.** `ffprobe` mostra 1080x1920, 30 fps, a duração certa e áudio. `ffmpeg -i out/<nome>-final.mp4 -af volumedetect -f null -` mostra pico até -1 dB.
+4. **Legenda** em `out/<Nome>.legenda.txt` (legenda.md).
+
+**Portão final (os dois caminhos):**
+```bash
+bash scripts/qa.sh <Id>      # ~2 min: render, master -14 LUFS, checagens, legenda, out/<Id>-contato.png
+```
+Só entregue com **PASS** e depois de abrir a folha de contato.
 
 ## 4. Peças (`src/lib`)
 
 - **`anim.ts`**: funções puras do quadro: `progress`, `easeInOut`, `easeOut`, `settle` (pouso com overshoot), `lerp`, `arc`, `hash01`. Nunca use estado nem `Math.random()`.
-- **`brand.tsx`**: cores, `Fonts`, `Label` (entra com mola e leve giro, sai com colapso cúbico; `bar` vira gancho), `EraTag` ("HÁ SÉCULOS", "HOJE"), `Watermark` (@OCAMISSOES), `EndCard` (wordmark + "ecossistema de inovação das Missões").
+- **`acoes.tsx`**: `ator(base, batidas)` com 19 ações (`andar`, `olhar-ceu`, `plantar`, `colher`, `segurar`, `digitar`, `entregar`, `comemorar`, `acolher`...), `<AtorFig>` e `<Sons>` (sons automáticos de cada ação). Tabela em fichas.md.
+- **`brand.tsx`**: cores, `Fonts`, `Label` (entra com mola e leve giro, sai com colapso cúbico; `bar` vira gancho; texto simples quebra linha com `\n` e encolhe sozinho para caber), `EraTag` ("HÁ SÉCULOS", "HOJE"), `Watermark` (@OCAMISSOES), `EndCard` (wordmark + "ecossistema de inovação das Missões").
 - **`figure.tsx`**: `Figure` com `look` `raiz` | `inova` | `povo`, `view` `perfil` | `frente` | `costas`, `prop` `cesto` | `semente` | `cuia` | `livro` | `tablet` | `celular`; poses de perfil `STAND`, `LOOK_UP`, `KNEEL`, `SIT`, `CARRY`, `HOLD`, `WAVE`, `walk()`, e de frente `FRENTE`, `FRENTE_UP`, `FRENTE_OPEN`, `FRENTE_HOLD`, `FRENTE_WAVE`; `mixPose()`.
-- **`world.tsx`**: `Stage` (céu por era e `hora` `dia` | `entardecer` | `noite`, câmera), `shot(tipo, ponto)` (planos `aberto`, `medio`, `close`, `detalhe`, `ceu`), `pickShot` (cortes secos), `Hills`, `Stars`, `Pleiades`, `Moon`, `Sol`, `Oca`, `Ruina`, `Erval`, `Roca`, `Sprout`, `Fogueira`, `Rio`, `Canoa`, `Prensa`, `Livro`, `Cuia`.
-- **`tech.tsx`**: `GlowDef`, `HoloPanel`, `Satellite` (com `ping`), `Drone`, `Nuvem`, `Celular`, `Notebook`, `Antena`, `PainelSolar`, `Sensor`, `CircuitRoots` (raízes que viram circuito: a assinatura visual), `DataMotes`.
+- **`world.tsx`**: `Stage` (céu por era e `hora` `dia` | `entardecer` | `noite`, câmera), `shot(tipo, ponto)` (planos `aberto`, `medio`, `close`, `detalhe`, `ceu`), `pickShot` (cortes secos), `Hills`, `Stars`, `Pleiades`, `Moon`, `Sol`, `Oca`, `Ruina`, `Erval`, `Roca`, `Sprout`, `Fogueira`, `Rio`, `Canoa`, `Prensa`, `Livro`, `Cuia`, `SacoErva`, `OcaModerna`, `Nuvens`, `Chuva`, `Ema`, `QueroQuero`.
+- **`tech.tsx`**: `GlowDef`, `HoloPanel`, `Satellite` (com `ping`), `Drone`, `Nuvem`, `Celular`, `Notebook`, `Antena`, `PainelSolar`, `Sensor`, `CircuitRoots` (raízes que viram circuito: a assinatura visual), `DataMotes`, `QRCode`, `MapPin`, `ChatBalao`, `Grafico`, `Trator`, `EstacaoClima`, `Lampada`, `Rede`.
 - **`fx.tsx`**: `Grain` (textura de papel fixa), `Vignette`, `Portal` (o "o" do logo como íris entre eras), `Particles` (`brasa`, `poeira`, `vagalume`, `dados`), `typed`, `drawOffset`, e `BoilDef` (traço vibrando: só num elemento, por menos de 1 s, veja estilo.md).
 - **`sound.tsx`**: `<Music name volume stopAt>`, `<Sfx name at volume length>`, `beatFrames()`, `TRAVESSIA_TURN` (quadro 288, onde a trilha `travessia` vira para o "hoje"). Nomes tipados: erro de digitação quebra o `tsc`.
 
@@ -98,7 +108,7 @@ npm run audio                     # gera public/audio/music/*.wav e public/audio
 - [ ] Cada contato tem som no mesmo quadro; ambiência ligada; trilha abaixo dos SFX.
 - [ ] Toda referência está no acervo; nenhum número sem fonte; zero travessões.
 - [ ] Arquivo 1080x1920, 30 fps, 15 a 25 s, -14 LUFS, pico até -1 dB.
-- [ ] Legenda pronta (legenda.md) com a fonte.
+- [ ] Legenda pronta (legenda.md) com a fonte, e `scripts/qa.sh` deu PASS.
 
 ## 6. Entrega
 

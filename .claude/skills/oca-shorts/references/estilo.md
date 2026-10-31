@@ -59,7 +59,7 @@ Regras para todo vídeo parecer da OCA, qualquer que seja o formato. Na dúvida,
 ## Texto
 
 - **Etiqueta de era**: `EraTag`, mono, maiúsculas, com traço no acento da era (`HÁ SÉCULOS`, `EM 1700`, `HOJE`).
-- **Gancho**: `Label bar={URUCUM}`, até 4 palavras, uma pergunta, na tela até 0,5 s.
+- **Gancho**: `Label bar={URUCUM}`, até 5 palavras, uma pergunta, na tela até 0,5 s.
 - **Frase**: `Label`, Outfit 700, minúsculas, 64 a 78 px, até 6 palavras, termina com ponto. A última palavra importante pode ir em luz (no "hoje").
 - **Etiqueta pequena**: `Label mono size 26` em palha, para nomear o saber (`EIXU · PLÊIADES`).
 - Entrada com mola e giro leve; saída com colapso rápido, nunca um fade lento.

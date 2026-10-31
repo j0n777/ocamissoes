@@ -197,3 +197,157 @@ export const Nuvem = ({ x, y, frame, size = 1 }: { x: number; y: number; frame: 
     })}
   </g>
 );
+
+// QR code (deterministic pattern with the three finder squares). Traceability.
+export const QRCode = ({ x, y, size = 160, seed = 3 }: { x: number; y: number; size?: number; seed?: number }) => {
+  const n = 13, c = size / n;
+  const finder = (i: number, j: number) => (i < 4 && j < 4) || (i > n - 5 && j < 4) || (i < 4 && j > n - 5);
+  return (
+    <g>
+      <rect x={x - size / 2 - c} y={y - size / 2 - c} width={size + 2 * c} height={size + 2 * c} fill={CREME} />
+      {Array.from({ length: n * n }, (_, k) => {
+        const i = k % n, j = Math.floor(k / n);
+        if (finder(i, j)) return null;
+        return hash01(k, seed) > 0.5 ? <rect key={k} x={x - size / 2 + i * c} y={y - size / 2 + j * c} width={c} height={c} fill={NOITE} /> : null;
+      })}
+      {[[0, 0], [n - 3, 0], [0, n - 3]].map(([i, j]) => (
+        <g key={`${i}${j}`}>
+          <rect x={x - size / 2 + i * c} y={y - size / 2 + j * c} width={3 * c} height={3 * c} fill="none" stroke={NOITE} strokeWidth={c * 0.8} />
+          <rect x={x - size / 2 + (i + 1) * c} y={y - size / 2 + (j + 1) * c} width={c} height={c} fill={NOITE} />
+        </g>
+      ))}
+    </g>
+  );
+};
+
+// Map pin that drops in (`t` 0..1) with a ring on the ground.
+export const MapPin = ({ x, y, t = 1, size = 1 }: { x: number; y: number; t?: number; size?: number }) => {
+  const k = clamp01(t), s = size;
+  const py = y - (1 - easeOut(k)) * 200;
+  return (
+    <g opacity={k > 0 ? 1 : 0}>
+      <ellipse cx={x} cy={y + 4} rx={30 * s * k} ry={8 * s * k} fill="none" stroke={LUZ} strokeWidth={4} />
+      <path d={`M ${x} ${py} C ${x - 10 * s} ${py - 30 * s}, ${x - 36 * s} ${py - 44 * s}, ${x - 36 * s} ${py - 70 * s} A ${36 * s} ${36 * s} 0 1 1 ${x + 36 * s} ${py - 70 * s} C ${x + 36 * s} ${py - 44 * s}, ${x + 10 * s} ${py - 30 * s}, ${x} ${py} Z`} fill={LUZ} stroke={NOITE} strokeWidth={4} />
+      <circle cx={x} cy={py - 70 * s} r={13 * s} fill={NOITE} />
+    </g>
+  );
+};
+
+// Chat bubble: an AI answer typing in. `t` 0..1 reveals the lines; `de`
+// "ia" (luz, left tail) or "pessoa" (creme, right tail).
+export const ChatBalao = ({ x, y, t = 1, w = 380, lines = 3, de = "ia" }: { x: number; y: number; t?: number; w?: number; lines?: number; de?: "ia" | "pessoa" }) => {
+  const k = clamp01(t);
+  if (k <= 0) return null;
+  const h = 40 + lines * 34;
+  const fill = de === "ia" ? LUZ : CREME;
+  const tail = de === "ia" ? `M ${x - w / 2 + 30} ${y + h / 2} l -20 30 l 50 -30 Z` : `M ${x + w / 2 - 30} ${y + h / 2} l 20 30 l -50 -30 Z`;
+  return (
+    <g opacity={easeOut(clamp01(k * 4))} transform={`translate(0 ${(1 - easeOut(clamp01(k * 4))) * 20})`}>
+      <rect x={x - w / 2} y={y - h / 2} width={w} height={h} rx={26} fill={fill} opacity={de === "ia" ? 0.2 : 0.95} stroke={fill} strokeWidth={4} />
+      <path d={tail} fill={fill} opacity={de === "ia" ? 0.5 : 0.95} />
+      {Array.from({ length: lines }, (_, i) => {
+        const lt = clamp01(k * (lines + 1) - i - 0.5);
+        const lw = (w - 60) * (i === lines - 1 ? 0.55 : 0.9) * lt;
+        return <rect key={i} x={x - w / 2 + 30} y={y - h / 2 + 26 + i * 34} width={lw} height={14} rx={7} fill={de === "ia" ? LUZ : NOITE} opacity={0.85} />;
+      })}
+    </g>
+  );
+};
+
+// Line chart drawing itself (`t` 0..1), the last point lit. Rising by default.
+export const Grafico = ({ x, y, w = 380, h = 220, t = 1, pontos = [0.2, 0.3, 0.28, 0.45, 0.6, 0.85] }: { x: number; y: number; w?: number; h?: number; t?: number; pontos?: number[] }) => {
+  const l = x - w / 2, b = y + h / 2;
+  const pts = pontos.map((v, i) => [l + (i / (pontos.length - 1)) * w, b - v * h] as [number, number]);
+  const d = pts.map(([px, py], i) => `${i ? "L" : "M"} ${px} ${py}`).join(" ");
+  const last = pts[pts.length - 1];
+  return (
+    <g>
+      <line x1={l} y1={b} x2={l + w} y2={b} stroke={CREME} strokeWidth={4} opacity={0.5} />
+      <line x1={l} y1={b} x2={l} y2={b - h} stroke={CREME} strokeWidth={4} opacity={0.5} />
+      <path d={d} fill="none" stroke={LUZ} strokeWidth={7} strokeLinejoin="round" strokeLinecap="round" strokeDasharray="1" pathLength={1} strokeDashoffset={1 - easeOut(clamp01(t))} />
+      {t >= 0.98 && <circle cx={last[0]} cy={last[1]} r={12} fill={LUZ} filter="url(#glow)" />}
+    </g>
+  );
+};
+
+// Tractor (side view) with turning wheels; `x` moves it, `frame` turns wheels.
+export const Trator = ({ x, ground, frame, size = 1, facing = 1 }: { x: number; ground: number; frame: number; size?: number; facing?: 1 | -1 }) => {
+  const s = size, rot = (frame * 6 * facing) % 360;
+  const wheel = (cx: number, r: number) => (
+    <g transform={`rotate(${rot} ${cx} ${ground - r})`}>
+      <circle cx={cx} cy={ground - r} r={r} fill={NOITE} stroke={CREME} strokeWidth={5} />
+      <line x1={cx - r * 0.7} y1={ground - r} x2={cx + r * 0.7} y2={ground - r} stroke={CREME} strokeWidth={4} />
+      <line x1={cx} y1={ground - r * 1.7} x2={cx} y2={ground - r * 0.3} stroke={CREME} strokeWidth={4} />
+    </g>
+  );
+  return (
+    <g transform={`translate(${x} 0) scale(${facing} 1) translate(${-x} 0)`}>
+      <rect x={x - 90 * s} y={ground - 150 * s} width={120 * s} height={70 * s} fill={CREME} stroke={TERRA} strokeWidth={5} />
+      <rect x={x - 60 * s} y={ground - 230 * s} width={70 * s} height={80 * s} fill="none" stroke={CREME} strokeWidth={6} />
+      <rect x={x + 30 * s} y={ground - 120 * s} width={70 * s} height={50 * s} fill={CREME} stroke={TERRA} strokeWidth={5} />
+      <circle cx={x - 25 * s} cy={ground - 236 * s} r={10 * s} fill={LUZ} />
+      {wheel(x - 60 * s, 62 * s)}
+      {wheel(x + 70 * s, 36 * s)}
+    </g>
+  );
+};
+
+// Weather station: mast, spinning anemometer cups, a small solar plate.
+export const EstacaoClima = ({ x, ground, frame, h = 300 }: { x: number; ground: number; frame: number; h?: number }) => {
+  const a = frame / 4;
+  return (
+    <g>
+      <line x1={x} y1={ground} x2={x} y2={ground - h} stroke={CREME} strokeWidth={8} />
+      <rect x={x - 26} y={ground - h * 0.55} width={52} height={40} fill={CREME} stroke={TERRA} strokeWidth={4} />
+      <circle cx={x} cy={ground - h * 0.55 + 20} r={6} fill={LUZ} />
+      {[0, 1, 2].map((k) => {
+        const ang = a + (k * Math.PI * 2) / 3;
+        const cx = x + Math.cos(ang) * 46, cy = ground - h - 6;
+        return (
+          <g key={k}>
+            <line x1={x} y1={ground - h} x2={cx} y2={cy} stroke={CREME} strokeWidth={4} />
+            <circle cx={cx} cy={cy} r={10 * (0.6 + 0.4 * Math.abs(Math.sin(ang)))} fill={CREME} />
+          </g>
+        );
+      })}
+    </g>
+  );
+};
+
+// Light bulb "idea": lights up with `t` 0..1 and short rays.
+export const Lampada = ({ x, y, t = 1, size = 1 }: { x: number; y: number; t?: number; size?: number }) => {
+  const k = clamp01(t), s = size;
+  return (
+    <g>
+      {k > 0.5 &&
+        Array.from({ length: 8 }, (_, i) => {
+          const ang = (i / 8) * Math.PI * 2;
+          return <line key={i} x1={x + Math.cos(ang) * 70 * s} y1={y + Math.sin(ang) * 70 * s} x2={x + Math.cos(ang) * (70 + 30 * easeOut((k - 0.5) * 2)) * s} y2={y + Math.sin(ang) * (70 + 30 * easeOut((k - 0.5) * 2)) * s} stroke={LUZ} strokeWidth={6} strokeLinecap="round" />;
+        })}
+      <circle cx={x} cy={y} r={52 * s} fill={k > 0.5 ? LUZ : NOITE} stroke={CREME} strokeWidth={6} opacity={0.4 + 0.6 * k} filter={k > 0.5 ? "url(#glow)" : undefined} />
+      <rect x={x - 22 * s} y={y + 48 * s} width={44 * s} height={34 * s} rx={6} fill={CREME} />
+    </g>
+  );
+};
+
+// Network: nodes (people, companies) joined by lines that draw in with `t`.
+// Pass the points; by default every node links to the next two.
+export const Rede = ({ nos, t = 1, frame = 0 }: { nos: [number, number][]; t?: number; frame?: number }) => {
+  const links: [number, number][] = [];
+  nos.forEach((_, i) => {
+    links.push([i, (i + 1) % nos.length]);
+    if (nos.length > 3) links.push([i, (i + 2) % nos.length]);
+  });
+  return (
+    <g filter="url(#glow)">
+      {links.map(([a, b], k) => {
+        const lt = clamp01(t * links.length * 0.6 - k * 0.6);
+        const [x1, y1] = nos[a], [x2, y2] = nos[b];
+        return lt > 0 ? <line key={k} x1={x1} y1={y1} x2={lerp(x1, x2, easeOut(lt))} y2={lerp(y1, y2, easeOut(lt))} stroke={LUZ} strokeWidth={4} opacity={0.75} /> : null;
+      })}
+      {nos.map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r={12 + 2 * Math.sin(frame / 20 + i)} fill={LUZ} opacity={clamp01(t * 3 - i * 0.2)} />
+      ))}
+    </g>
+  );
+};

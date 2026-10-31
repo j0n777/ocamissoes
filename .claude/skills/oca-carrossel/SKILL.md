@@ -8,6 +8,7 @@ description: Cria carrosséis para Instagram/LinkedIn da OCA Missões, o ecossis
 Um carrossel que ensina algo útil em 8 deslizadas e deixa uma ideia: **a inovação sempre esteve aqui**. Cada slide tem uma ideia em tipo grande. Juntos, contam um saber das Missões, o que existe hoje e o que o leitor pode fazer com isso.
 
 Leia antes de escrever:
+- [references/pauta.md](references/pauta.md): o que performa no Instagram hoje (envios, salvamentos, slide 2, até 20 slides, grade 3:4), os 5 pilares, as séries (2026: **400 anos das Missões**) e 20 pautas prontas com fonte. Comece aqui quando o pedido for "faz um carrossel" sem tema.
 - [references/copy.md](references/copy.md): o arco (gancho, fato, contexto, destaque, ponte, reflexão, útil, CTA), regras de texto, ângulos e legenda.
 - [references/slides.md](references/slides.md): os arquétipos de slide do `template/slides.html` e como criar novos.
 - [references/imagens.md](references/imagens.md): imagens de referência: pesquisar (Commons, Internet Archive), gerar com IA no estilo da casa, o que é proibido, crédito.
@@ -33,11 +34,14 @@ Leia antes de escrever:
 
 ## 2. Pipeline
 
+O template tem dois carrosséis modelo, que usam o mesmo CSS (`assets/oca.css`): `slides.html` (imprensa de 1700, 8 slides) e `exemplo-suarez.html` (telescópios das Missões, 9 slides, com os tipos `s-numero` e `s-pergunta`). Um carrossel novo é uma cópia de um deles, só com as `<section>` trocadas; nunca mexa no CSS por carrossel.
+
 ```bash
 cp -r "$SKILL_DIR/template" "$WORK/carrossel"   # SKILL_DIR = pasta deste SKILL.md
 cd "$WORK/carrossel"
 npm install                                      # Playwright
 node scripts/render.mjs slides.html out          # -> out/oca-carrossel-01..NN.png, 1080x1350
+node scripts/render.mjs <outro>.html out <prefixo>  # outro arquivo, outro prefixo
 ```
 
 Requisitos: Node 18+, ffmpeg (para o downscale 2x) e um Chromium (`browser.mjs` encontra um, ou peça `npx playwright install chromium`).
@@ -53,6 +57,8 @@ Passos:
 ## 3. Checklist
 
 - [ ] Teste do deslize: lendo só os títulos, o slide 1 dá vontade de ver o 2, e o último diz o que fazer.
+- [ ] O slide 2 funciona sozinho (o Instagram pode reexibir o carrossel a partir dele).
+- [ ] Há um slide "salvável" (lista, passo a passo, dado) e um pedido simples no fim (salvar, enviar ou comentar).
 - [ ] Há saber ancestral com fonte, ferramenta de hoje e um slide útil.
 - [ ] Cada fato e número está no acervo e tem `.src` no slide; nenhum "primeiro do mundo" sem fonte forte.
 - [ ] Um acento por slide (urucum no antes, luz no hoje); fundos alternados; wordmark no topo.

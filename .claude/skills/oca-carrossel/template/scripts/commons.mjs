@@ -52,13 +52,14 @@ for (const p of pages) {
   if (!ii || !OK.test(licence)) continue;
   n++;
   const author = strip(m.Artist?.value) || "autor desconhecido";
-  const file = `${OUT}/commons-${slug(query)}-${n}.jpg`;
+  const ext = (ii.thumburl.match(/\.(png|jpe?g|webp)(?:$|\?)/i)?.[1] ?? "jpg").toLowerCase().replace("jpeg", "jpg");
+  const file = `${OUT}/commons-${slug(query)}-${n}.${ext}`;
   writeFileSync(file, await get(ii.thumburl, true));
   const meta = {
     arquivo: file, titulo: p.title, autor: author, licenca: licence, pagina: ii.descriptionurl, largura: ii.width, altura: ii.height,
-    credito: `Foto: ${author}, ${licence}, via Wikimedia Commons`,
+    credito: `Imagem: ${author}, ${licence}, via Wikimedia Commons`,
   };
-  writeFileSync(file.replace(/\.jpg$/, ".json"), JSON.stringify(meta, null, 2));
+  writeFileSync(file.replace(/\.\w+$/, ".json"), JSON.stringify(meta, null, 2));
   console.log(`${file}\n  ${p.title}\n  ${meta.credito}\n  ${ii.descriptionurl}`);
   await sleep(1200);
 }

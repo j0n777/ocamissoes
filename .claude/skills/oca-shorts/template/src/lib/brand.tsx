@@ -63,6 +63,22 @@ export const Label = ({
   mono?: boolean;
   style?: CSSProperties;
 }) => {
+  // Plain strings: "\n" breaks the line and the size shrinks so the longest
+  // line fits between the margins (estimated from the character count).
+  let content = children;
+  let fs = size;
+  if (typeof children === "string") {
+    const lines = children.split("\n");
+    const longest = Math.max(...lines.map((l) => l.length));
+    const em = mono ? 0.78 : 0.53;
+    fs = Math.min(size, Math.floor((W - 2 * MARGIN - (bar ? 68 : 0)) / (longest * em)));
+    content = lines.map((l, i) => (
+      <span key={i}>
+        {i > 0 && <br />}
+        {l}
+      </span>
+    ));
+  }
   const tin = progress(frame, at, 14);
   if (tin <= 0) return null;
   const tout = out === undefined ? 0 : progress(frame, out, 8);
@@ -75,7 +91,7 @@ export const Label = ({
         style={{
           fontFamily: mono ? MONO : FONT,
           fontWeight: weight,
-          fontSize: size,
+          fontSize: fs,
           lineHeight: 1.05,
           letterSpacing: mono ? "0.16em" : "-0.02em",
           textTransform: mono ? "uppercase" : "none",
@@ -89,20 +105,20 @@ export const Label = ({
           ...style,
         }}
       >
-        {children}
+        {content}
       </div>
     </div>
   );
 };
 
 // Era tag ("HÁ SÉCULOS", "HOJE"): small mono text with a short accent line.
-export const EraTag = ({ frame, at = 0, out, text, accent, y = 250 }: { frame: number; at?: number; out?: number; text: string; accent: string; y?: number }) => {
+export const EraTag = ({ frame, at = 0, out, text, accent, y = 250, color = CREME }: { frame: number; at?: number; out?: number; text: string; accent: string; y?: number; color?: string }) => {
   const t = easeOut(progress(frame, at, 12));
   if (t <= 0 || (out !== undefined && frame >= out)) return null;
   return (
     <div style={{ position: "absolute", top: y, left: 0, right: 0, display: "flex", justifyContent: "center", alignItems: "center", gap: 18, opacity: t }}>
       <i style={{ display: "block", width: 70 * t, height: 4, background: accent }} />
-      <span style={{ fontFamily: MONO, fontSize: 30, letterSpacing: "0.3em", color: CREME, fontWeight: 600 }}>{text}</span>
+      <span style={{ fontFamily: MONO, fontSize: 30, letterSpacing: "0.3em", color, fontWeight: 600 }}>{text}</span>
       <i style={{ display: "block", width: 70 * t, height: 4, background: accent }} />
     </div>
   );

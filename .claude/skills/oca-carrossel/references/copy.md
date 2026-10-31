@@ -13,6 +13,10 @@
 | 7 | Útil | creme | O que o leitor faz amanhã: 3 passos ou 3 ferramentas | "Guarde o saber da sua empresa." |
 | 8 | CTA | barro | Convite, não venda | "A casa da inovação das Missões." + @ocamissoes |
 
+Variação "com dado e conversa" (exemplo-suarez.html): Capa, Fato, Imagem, Destaque, Ponte, **Número** (o hoje com fonte), Lista, **Pergunta**, CTA.
+
+O slide 2 precisa funcionar sozinho: o Instagram pode reexibir o carrossel a partir dele para quem passou direto pela capa. O CTA pede uma coisa só: salvar, enviar ("manda pra quem planta") ou comentar.
+
 Para 6 slides, junte Contexto e Destaque e corte a Reflexão. Para 10, acrescente um segundo Útil ou um slide de pergunta ("E você, que saber da sua família virou negócio?").
 
 ## Fórmula por slide

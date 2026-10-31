@@ -3,8 +3,9 @@ import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { Fonts, H, Label, LUZ, MONO, PALHA, TERRA, URUCUM, W } from "../lib/brand";
 import { CARRY, Figure, FRENTE, FRENTE_HOLD, FRENTE_OPEN, FRENTE_UP, FRENTE_WAVE, HOLD, KNEEL, LOOK_UP, type Pose, SIT, STAND, WAVE, walk } from "../lib/figure";
 import { Grain, Particles, Portal } from "../lib/fx";
-import { Antena, Celular, CircuitRoots, DataMotes, Drone, GlowDef, HoloPanel, Notebook, Nuvem, PainelSolar, Satellite, Sensor } from "../lib/tech";
-import { Canoa, Cuia, Erval, Fogueira, Hills, Livro, Moon, Oca, Pleiades, Prensa, Rio, Roca, Ruina, Sol, Sprout, Stage, Stars, type Era, type Hora, type Plano, shot } from "../lib/world";
+import { Antena, Celular, ChatBalao, CircuitRoots, DataMotes, Drone, EstacaoClima, GlowDef, Grafico, HoloPanel, Lampada, MapPin, Notebook, Nuvem, PainelSolar, QRCode, Rede, Satellite, Sensor, Trator } from "../lib/tech";
+import { Canoa, Chuva, Cuia, Ema, Erval, Fogueira, Hills, Livro, Moon, Nuvens, Oca, OcaModerna, Pleiades, Prensa, QueroQuero, Rio, Roca, Ruina, SacoErva, Sol, Sprout, Stage, Stars, type Era, type Hora, type Plano, shot } from "../lib/world";
+import { type Faz, ator, AtorFig } from "../lib/acoes";
 
 // The visual library: model sheets of everything the skill can draw, to pick
 // from when writing a scene and to show the team what exists. Each sheet is a
@@ -230,3 +231,73 @@ export const BibPlanos = () => {
     </AbsoluteFill>
   );
 };
+
+// 7. Nature of the pampa and the Missões: clouds, rain, birds.
+export const BibNatureza = () => {
+  const f = useCurrentFrame();
+  return (
+    <Sheet title="natureza" hora="dia">
+      <Nuvens frame={f} y={260} count={4} />
+      <Cap x={540} y={520} color={TERRA}>NUVENS (DIA)</Cap>
+      <Hills ground={1000} era="antes" />
+      <Ema x={260} ground={980} size={1} frame={f} />
+      <Cap x={260} y={1040}>EMA</Cap>
+      <QueroQuero x={620} y={980} size={1.6} />
+      <QueroQuero x={760} y={700} size={1.3} voando frame={f} />
+      <Cap x={680} y={1040}>QUEROQUERO (PARADO E VOANDO)</Cap>
+      <rect x={0} y={1120} width={W} height={800} fill="#3b2414" />
+      <Nuvens frame={f} y={1180} count={3} tone="noite" seed={5} />
+      <Chuva frame={f} box={[0, 1200, 1080, 1860]} count={60} />
+      <Erval x={540} ground={1800} size={0.9} frame={f} />
+      <Cap x={540} y={1880} color={PALHA}>CHUVA · NUVENS (NOITE)</Cap>
+    </Sheet>
+  );
+};
+
+// 8. Community and business today: the modern oca, networks, AI, data, field.
+export const BibComunidade = () => {
+  const f = useCurrentFrame();
+  return (
+    <Sheet title="hoje · comunidade e negócio" era="hoje">
+      <OcaModerna x={290} ground={560} w={400} h={240} />
+      <Cap x={290} y={600}>OCAMODERNA</Cap>
+      <Rede nos={[[640, 330], [780, 280], [920, 340], [900, 480], [760, 520], [640, 460]]} t={1} frame={f} />
+      <Cap x={780} y={600}>REDE</Cap>
+      <ChatBalao x={300} y={740} t={1} de="pessoa" lines={2} w={360} />
+      <ChatBalao x={300} y={900} t={1} de="ia" lines={3} w={400} />
+      <Cap x={300} y={1020}>CHATBALAO (PESSOA · IA)</Cap>
+      <Lampada x={790} y={760} t={1} />
+      <Cap x={790} y={900}>LAMPADA</Cap>
+      <Grafico x={280} y={1180} w={360} h={200} t={1} />
+      <Cap x={280} y={1330}>GRAFICO</Cap>
+      <QRCode x={640} y={1170} size={150} />
+      <Cap x={640} y={1330}>QRCODE</Cap>
+      <MapPin x={900} y={1250} t={1} />
+      <Cap x={900} y={1330}>MAPPIN</Cap>
+      <SacoErva x={170} ground={1780} size={1} tag />
+      <Cap x={170} y={1830}>SACOERVA</Cap>
+      <Trator x={500} ground={1780} frame={f} size={1} />
+      <Cap x={500} y={1830}>TRATOR</Cap>
+      <EstacaoClima x={880} ground={1780} frame={f} h={280} />
+      <Cap x={880} y={1830}>ESTACAOCLIMA</Cap>
+    </Sheet>
+  );
+};
+
+// 9. Actions (lib/acoes.tsx): each verb shown mid-way through a 60-frame beat.
+const ACOES: Faz[] = ["parado", "andar", "olhar-ceu", "apontar", "ajoelhar", "plantar", "colher", "segurar", "digitar", "acenar", "carregar", "sentar", "beber-mate", "entregar", "comemorar", "acolher", "mostrar", "acenar-frente"];
+const PROP: Partial<Record<Faz, "cesto" | "tablet" | "semente" | "cuia" | "celular" | "livro">> = { plantar: "semente", colher: "cesto", segurar: "livro", digitar: "tablet", carregar: "livro", "beber-mate": "cuia", mostrar: "tablet" };
+export const BibAcoes = () => (
+  <Sheet title='ações: ator(base, [{ de, ate, faz }])'>
+    {ACOES.map((faz, i) => {
+      const x = 150 + (i % 4) * 260, y = 470 + Math.floor(i / 4) * 330;
+      const a = ator({ x, y }, [{ de: 0, ate: 60, faz, x: x + 60 }]);
+      return (
+        <g key={faz}>
+          <AtorFig a={a} f={faz === "beber-mate" ? 55 : 30} look={i % 2 ? "inova" : "raiz"} size={200} prop={PROP[faz] ?? "none"} glow={1} />
+          <Cap x={x + (faz === "andar" ? 30 : 0)} y={y + 40}>{`"${faz}"`}</Cap>
+        </g>
+      );
+    })}
+  </Sheet>
+);

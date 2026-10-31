@@ -11,6 +11,9 @@ Antes de escrever uma cena, abra as folhas e escolha daqui. Se faltar algo, crie
 | [BibAntes](../biblioteca/BibAntes.webp) | Cenário e objetos do "antes": `Oca`, `Ruina`, `Erval`, `Roca`, `Sprout`, `Fogueira`, `Prensa`, `Livro`, `Cuia`, `Rio`, `Canoa`, `Sol` |
 | [BibHoje](../biblioteca/BibHoje.webp) | Kit do "hoje": `Satellite`, `Drone`, `Nuvem`, `Celular`, `HoloPanel`, `Antena`, `Notebook`, `PainelSolar`, `Sensor`, `CircuitRoots`, `DataMotes` |
 | [BibCeus](../biblioteca/BibCeus.webp) | O mesmo lugar em `hora="dia" \| "entardecer" \| "noite"` nas duas eras (`Stage era hora`) |
+| [BibAcoes](../biblioteca/BibAcoes.webp) | As ações de `lib/acoes.tsx` (todas menos `virar`), cada uma no meio do movimento (tabela em fichas.md) |
+| [BibNatureza](../biblioteca/BibNatureza.webp) | `Nuvens` (dia e noite), `Chuva`, `Ema` (a ave da constelação de inverno), `QueroQuero` parado e voando |
+| [BibComunidade](../biblioteca/BibComunidade.webp) | `OcaModerna` (a OCA de hoje), `Rede`, `ChatBalao` (pessoa e IA), `Lampada`, `Grafico`, `QRCode`, `MapPin`, `SacoErva`, `Trator`, `EstacaoClima` |
 | [BibPlanos](../biblioteca/BibPlanos.webp) | A mesma cena nos 5 planos de `shot(tipo, ponto)`: `aberto`, `medio`, `close`, `detalhe`, `ceu`, mais o portal no meio |
 
 ## Vistas e poses

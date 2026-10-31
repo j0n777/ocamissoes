@@ -1,0 +1,101 @@
+<!doctype html>
+<!--
+  OCA Missões carousel, second example (pauta 2): "Telescópios feitos nas Missões mediram o céu."
+  Styles live in assets/oca.css (shared by every carousel); a new carousel is
+  a copy of this file with new <section>s.
+  Each <section class="slide" id="sN"> is one 1080x1350 slide; ids must run s1..sN.
+  Archetypes (see references/slides.md): Capa, Fato, Linha do tempo, Destaque,
+  Ponte, Reflexão, Lista, CTA. Copy, duplicate or delete sections; keep ids sequential.
+  Render: node scripts/render.mjs slides.html out
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>OCA Missões | Carrossel</title>
+<link rel="stylesheet" href="assets/oca.css">
+</head>
+<body>
+
+<!-- 1. Capa -->
+<section class="slide g-noite s-capa" id="s1">
+  <div class="img duo bg-img"><img src="assets/ref/lunario-de-un-siglo-portada.png" alt="" style="object-position: 50% 20%"></div>
+  <div class="ring"></div>
+  <img class="brand" src="assets/oca-wordmark-creme.svg" alt="OCA Missões">
+  <p class="tag"><i></i>Missões, século XVIII</p>
+  <p class="big" style="font-size: 122px">Telescópios feitos nas Missões mediram o&nbsp;céu<span class="u">.</span></p>
+  <p class="hint"><i></i>Arraste</p>
+</section>
+
+<!-- 2. Fato (funciona sozinho, caso o Instagram mostre a partir daqui) -->
+<section class="slide g-creme s-fato" id="s2">
+  <img class="brand" src="assets/oca-wordmark-terra.svg" alt="OCA Missões">
+  <p class="num">147</p>
+  <p class="big">eclipses das luas de Júpiter, anotados em 13&nbsp;anos<span class="u">.</span></p>
+  <p class="sub">Pelo jesuíta Buenaventura Suárez, com telescópios construídos por artesãos Guarani em San Cosme y&nbsp;Damián.</p>
+  <p class="src">Fonte: Revista Pesquisa FAPESP n. 327, 2023; Rev. Mex. Física E 57, 2011</p>
+</section>
+
+<!-- 3. Imagem (a prova) -->
+<section class="slide g-creme s-imagem" id="s3">
+  <img class="brand" src="assets/oca-wordmark-terra.svg" alt="OCA Missões">
+  <div class="img doc chamfer"><img src="assets/ref/lunario-de-un-siglo-portada.png" alt="Folha de rosto do Lunario de un siglo" style="object-position: 50% 0%"></div>
+  <p class="big">Um calendário do céu para cem anos<span class="u">.</span></p>
+  <p class="sub">Eclipses e fases da Lua de 1740 a 1841, calculados no meridiano de San Cosme y&nbsp;Damián.</p>
+  <p class="src">Imagem: Buenaventura Suárez, domínio público, via Wikimedia Commons</p>
+</section>
+
+<!-- 4. Destaque -->
+<section class="slide g-barro s-destaque" id="s4">
+  <img class="brand" src="assets/oca-wordmark-creme.svg" alt="OCA Missões">
+  <p class="q">“</p>
+  <p class="big">Dados das Missões chegaram à Royal Society<span class="u">.</span></p>
+  <p class="sub">Eclipses da Lua observados em São Miguel, em 1747, saíram nas Philosophical Transactions de 1749 e&nbsp;1750.</p>
+  <p class="src">Fonte: Galindo e Rodríguez-Meza, Rev. Mex. Física E 57, 2011</p>
+</section>
+
+<!-- 5. Ponte -->
+<section class="slide s-ponte" id="s5">
+  <img class="brand" src="assets/oca-wordmark-creme.svg" alt="OCA Missões">
+  <div class="half a"><p class="tag"><i></i>Antes</p><p class="big">Lentes, madeira e mãos Guarani<span class="u">.</span></p></div>
+  <div class="seam"></div>
+  <div class="half h"><p class="tag"><i></i>Hoje</p><p class="big">Satélites e previsão na palma da&nbsp;mão<span class="l">.</span></p></div>
+</section>
+
+<!-- 6. Numero (o hoje, com fonte) -->
+<section class="slide g-noite s-numero" id="s6">
+  <img class="brand" src="assets/oca-wordmark-creme.svg" alt="OCA Missões">
+  <p class="num">33,9%</p>
+  <div class="meter chamfer-sm"><i style="width: 33.9%"></i></div>
+  <p class="big">O céu é de todos<span class="l">.</span> O&nbsp;sinal, ainda&nbsp;não<span class="l">.</span></p>
+  <p class="sub">É a parte da área agrícola do Brasil com 4G ou 5G (ConectarAGRO,&nbsp;2025).</p>
+  <p class="src">Fonte: Teletime, 30/04/2025</p>
+</section>
+
+<!-- 7. Lista (salvável) -->
+<section class="slide g-creme s-lista" id="s7">
+  <img class="brand" src="assets/oca-wordmark-terra.svg" alt="OCA Missões">
+  <p class="big">Dados do céu que você usa hoje<span class="u">.</span></p>
+  <ol>
+    <li><b>01</b><span><strong>Previsão por hora</strong> para escolher o dia de plantar e de colher.</span></li>
+    <li><b>02</b><span><strong>Imagens de satélite gratuitas</strong> para acompanhar a lavoura de&nbsp;cima.</span></li>
+    <li><b>03</b><span><strong>Alertas no celular</strong> para geada e chuva forte, antes que&nbsp;cheguem.</span></li>
+  </ol>
+</section>
+
+<!-- 8. Pergunta (comentários) -->
+<section class="slide g-barro s-pergunta" id="s8">
+  <img class="brand" src="assets/oca-wordmark-creme.svg" alt="OCA Missões">
+  <p class="big">Que saber da tua família virou&nbsp;tecnologia<span class="u">?</span></p>
+  <p class="hint"><svg viewBox="0 0 24 24" fill="none" stroke="#f8f4e1" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>Conta nos comentários.</p>
+</section>
+
+<!-- 9. CTA -->
+<section class="slide g-noite s-cta" id="s9">
+  <img class="mark" src="assets/oca-wordmark-creme.svg" alt="OCA Missões">
+  <p class="big">A casa da inovação das Missões<span class="l">.</span></p>
+  <div class="handle chamfer"><span>@ocamissoes</span><span>→</span></div>
+  <p class="note">Salve para consultar depois.</p>
+</section>
+
+</body>
+</html>

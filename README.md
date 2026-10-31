@@ -13,7 +13,8 @@ A linha editorial: **a inovação sempre esteve aqui.** Cada conteúdo liga um s
   oca-shorts/biblioteca/  folhas prontas: personagens, poses, objetos, tecnologia, céus, planos
 brand/               logo, wordmarks vetorizados, paleta, fontes (OFL)
 references/          análise do Instagram, técnicas trazidas de outros projetos
-exemplos/            saídas aprovadas: o vídeo modelo (Plêiades → IA) e o carrossel modelo (imprensa de 1700)
+exemplos/            saídas modelo: vídeos (Plêiades → IA; erva-mate → rastreio, feito por ficha)
+                     e carrosséis (imprensa de 1700; telescópios das Missões)
 conteudo/            registro do que já foi produzido (evita repetir temas)
 ```
 
@@ -23,6 +24,9 @@ Dentro deste repositório, o Claude Code carrega as skills sozinho. Peça, por e
 
 - "faz um vídeo da OCA sobre erva-mate e rastreabilidade"
 - "carrossel da OCA sobre o céu como calendário"
+- "faz 3 carrosséis da série 400 anos" (a skill de carrossel tem 20 pautas prontas em `references/pauta.md`)
+
+Vídeo no formato Ponte sai de uma **ficha** (`oca-shorts/references/fichas.md`): o agente escolhe cenas prontas do "antes" e do "hoje", escreve os textos e a legenda, e `scripts/qa.sh` confere tudo antes da entrega.
 
 Cada skill tem um `SKILL.md` com regras, pipeline e checklist, e uma pasta `references/` com formatos, estilo, áudio, texto e o **acervo** (os únicos fatos permitidos, com fonte).
 

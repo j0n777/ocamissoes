@@ -1,0 +1,124 @@
+@font-face { font-family: Outfit; src: url(outfit-latin-wght-normal.woff2) format("woff2"); font-weight: 100 900; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212; }
+@font-face { font-family: Outfit; src: url(outfit-latin-ext-wght-normal.woff2) format("woff2"); font-weight: 100 900; unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "JetBrains Mono"; src: url(jetbrains-mono-latin-wght-normal.woff2) format("woff2"); font-weight: 100 800; unicode-range: U+0000-00FF, U+2000-206F; }
+@font-face { font-family: "JetBrains Mono"; src: url(jetbrains-mono-latin-ext-wght-normal.woff2) format("woff2"); font-weight: 100 800; unicode-range: U+0100-024F, U+1E00-1EFF; }
+
+:root {
+  --barro: #915729; --creme: #f8f4e1; --terra: #4a2a12; --noite: #24140a;
+  --argila: #b9773f; --palha: #d9b98a; --mate: #6f8a3c; --urucum: #c8462c; --luz: #3fd6c6;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #000; font-family: Outfit, sans-serif; -webkit-font-smoothing: antialiased; }
+
+/* Base slide: 1080x1350, 80 px padding, column so margin-top:auto pushes copy down. */
+.slide { position: relative; width: 1080px; height: 1350px; overflow: hidden; padding: 80px; display: flex; flex-direction: column; margin-bottom: 40px; }
+.slide > * { position: relative; z-index: 1; }
+/* Three grounds, from the logo. Pick per slide; alternate them along the carousel. */
+.g-barro { background: var(--barro); color: var(--creme); }
+.g-creme { background: var(--creme); color: var(--terra); }
+.g-noite { background: var(--noite); color: var(--creme); }
+/* Paper/clay grain on every slide (static SVG noise). */
+.slide::after { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: .13; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>"); }
+
+.brand { height: 40px; align-self: flex-start; }
+.tag { font-family: "JetBrains Mono", monospace; font-size: 26px; letter-spacing: .22em; text-transform: uppercase; display: flex; align-items: center; gap: 18px; }
+.tag i { display: block; width: 56px; height: 4px; }
+.big { font-weight: 700; letter-spacing: -.035em; line-height: .98; }
+.sub { font-size: 44px; line-height: 1.18; letter-spacing: -.015em; }
+.src { font-family: "JetBrains Mono", monospace; font-size: 20px; letter-spacing: .04em; opacity: .7; margin-top: 40px; }
+.u { color: var(--urucum); }
+.l { color: var(--luz); }
+.chamfer { clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%); }
+/* The logo "o": ring + dark centre. Decorative, partly off-canvas. */
+.ring { position: absolute; border-radius: 50%; z-index: 0; }
+
+/* Images (references/imagens.md). Every image carries a .src credit line.
+   .duo  brand duotone: grayscale image multiplied over barro (backgrounds, mood)
+   .doc  document/photo kept true, slightly warmed (when the image is the proof)
+   .ia   AI illustration already in the house style: shown as is */
+.img { position: relative; overflow: hidden; background: var(--terra); }
+.img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.duo { background: var(--barro); }
+.duo img { filter: grayscale(1) contrast(1.15) brightness(1.05); mix-blend-mode: multiply; }
+.doc img { filter: sepia(.25) saturate(.85) contrast(1.05); }
+.bg-img { position: absolute; inset: 0; z-index: 0; }
+.bg-img img { opacity: .5; }
+.bg-img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, var(--barro) 38%, rgba(145,87,41,.7) 72%, rgba(145,87,41,.55)); }
+
+/* 1 capa */
+.s-capa .ring { width: 980px; height: 980px; right: -380px; top: -260px; border: 150px solid rgba(248,244,225,.10); }
+.s-capa .tag { margin-top: 80px; } .s-capa .tag i { background: var(--urucum); }
+.s-capa .big { font-size: 148px; margin-top: auto; }
+.s-capa .hint { margin-top: 56px; display: flex; align-items: center; gap: 20px; font-size: 32px; color: var(--palha); }
+.s-capa .hint i { width: 80px; height: 4px; background: var(--urucum); display: block; }
+
+/* 2 fato: a big number/year + what it counts + where */
+.s-fato .num { font-size: 330px; font-weight: 700; letter-spacing: -.05em; line-height: .85; color: var(--urucum); margin-top: 120px; }
+.s-fato .big { font-size: 96px; margin-top: auto; }
+.s-fato .sub { margin-top: 32px; max-width: 880px; }
+
+/* 3 linha do tempo: dots on a line, the last one in luz */
+.s-linha .tl { margin-top: 240px; position: relative; display: flex; justify-content: space-between; }
+.s-linha .tl::before { content: ""; position: absolute; left: 14px; right: 14px; top: 14px; height: 4px; background: rgba(248,244,225,.35); }
+.s-linha .pt { position: relative; width: 210px; }
+.s-linha .pt b { display: block; width: 32px; height: 32px; border-radius: 50%; background: var(--creme); border: 6px solid var(--noite); box-shadow: 0 0 0 4px var(--creme); }
+.s-linha .pt.now b { background: var(--luz); box-shadow: 0 0 0 4px var(--luz), 0 0 30px var(--luz); }
+.s-linha .pt.old b { background: var(--urucum); box-shadow: 0 0 0 4px var(--urucum); }
+.s-linha .pt span { display: block; font-family: "JetBrains Mono", monospace; font-size: 42px; margin-top: 30px; font-weight: 700; }
+.s-linha .pt em { display: block; font-style: normal; font-size: 31px; line-height: 1.2; margin-top: 12px; color: var(--palha); }
+.s-linha .big { font-size: 110px; margin-top: auto; }
+
+/* imagem: image on top (chamfered, bleeding right), headline below */
+.s-imagem .img { margin: 56px -80px 0 0; height: 720px; }
+.s-imagem .img img { object-position: 50% 12%; }
+.s-imagem .big { font-size: 96px; margin-top: auto; }
+.s-imagem .sub { margin-top: 26px; }
+.s-imagem .src { margin-top: 30px; }
+
+/* 4 destaque: one strong line with a big quote mark */
+.s-destaque .q { font-size: 300px; font-weight: 700; line-height: .7; color: var(--urucum); margin-top: 110px; }
+.s-destaque .big { font-size: 104px; margin-top: auto; }
+.s-destaque .sub { margin-top: 32px; }
+
+/* 5 ponte: antes (top) | hoje (bottom) */
+.s-ponte { padding: 0; }
+.s-ponte .half { flex: 1; padding: 70px 80px; display: flex; flex-direction: column; justify-content: flex-end; }
+.s-ponte .a { background: var(--barro); color: var(--creme); }
+.s-ponte .h { background: var(--noite); color: var(--creme); }
+.s-ponte .a .tag i { background: var(--urucum); } .s-ponte .h .tag i { background: var(--luz); }
+.s-ponte .big { font-size: 84px; margin-top: 26px; }
+.s-ponte .brand { position: absolute; top: 70px; left: 80px; z-index: 3; }
+.s-ponte .seam { position: absolute; right: 90px; top: 50%; width: 120px; height: 120px; margin-top: -60px; border-radius: 50%; border: 26px solid var(--creme); background: var(--terra); z-index: 3; }
+
+/* 6 reflexão */
+.s-reflexao .ring { width: 620px; height: 620px; right: -220px; top: -180px; border: 96px solid rgba(63,214,198,.10); }
+.s-reflexao .big { font-size: 118px; margin-top: auto; }
+.s-reflexao .sub { margin-top: 36px; color: var(--palha); }
+
+/* 7 lista: up to 3 items */
+.s-lista .big { font-size: 92px; margin-top: 90px; }
+.s-lista ol { list-style: none; margin-top: auto; display: flex; flex-direction: column; gap: 26px; }
+.s-lista li { display: flex; gap: 30px; align-items: flex-start; background: rgba(74,42,18,.07); padding: 34px 36px; }
+.s-lista li b { font-family: "JetBrains Mono", monospace; font-size: 34px; color: var(--barro); min-width: 56px; }
+.s-lista li span { font-size: 40px; line-height: 1.18; letter-spacing: -.01em; }
+.s-lista li span strong { font-weight: 700; }
+
+/* 8 cta */
+.s-cta .mark { width: 640px; margin-top: 170px; align-self: center; }
+.s-cta .big { font-size: 96px; margin-top: auto; text-align: left; }
+.s-cta .handle { margin-top: 56px; background: var(--creme); color: var(--terra); padding: 40px 50px; font-size: 64px; font-weight: 700; letter-spacing: -.02em; display: flex; justify-content: space-between; align-items: center; }
+.s-cta .note { font-size: 36px; color: var(--palha); margin-top: 30px; }
+
+/* numero: one big number of today with a meter bar and its source */
+.s-numero .num { font-size: 290px; font-weight: 700; letter-spacing: -.05em; line-height: .85; color: var(--luz); margin-top: 150px; }
+.s-numero .meter { margin-top: 48px; height: 34px; background: rgba(248,244,225,.12); }
+.s-numero .meter i { display: block; height: 100%; background: var(--luz); }
+.s-numero .big { font-size: 92px; margin-top: auto; }
+.s-numero .sub { margin-top: 26px; color: var(--palha); }
+
+/* pergunta: one question in huge type, to open the comments */
+.s-pergunta .big { font-size: 128px; margin-top: auto; }
+.s-pergunta .hint { margin-top: 56px; display: flex; align-items: center; gap: 22px; font-size: 36px; }
+.s-pergunta .hint svg { width: 56px; height: 56px; }
+

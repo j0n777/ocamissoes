@@ -5,3 +5,4 @@ Todo som vem de `scripts/audio.mjs` e todo desenho dos vídeos é feito em códi
 | Arquivo | Origem | Licença | Crédito exigido? | Usado em |
 |---|---|---|---|---|
 | `oca-carrossel/template/assets/ref/yapuguay-1724-portada.jpg` | [Internet Archive, "Explicacion de el catechismo en lengua guarani" (1724)](https://archive.org/details/explicaciondeelc00yapu), digitalização da John Carter Brown Library | obra de 1724, domínio público | cortesia: "John Carter Brown Library, via Internet Archive" | carrossel modelo, slides 1 (fundo) e 4 |
+| `oca-carrossel/template/assets/ref/lunario-de-un-siglo-portada.png` | [Wikimedia Commons, "Lunario de un Siglo"](https://commons.wikimedia.org/wiki/File:Lunario_de_un_Siglo.png) | domínio público | cortesia: "Buenaventura Suárez, via Wikimedia Commons" | carrossel exemplo-suarez, slides 1 (fundo) e 3 |
