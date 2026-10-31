@@ -122,3 +122,15 @@ body { background: #000; font-family: Outfit, sans-serif; -webkit-font-smoothing
 .s-pergunta .hint { margin-top: 56px; display: flex; align-items: center; gap: 22px; font-size: 36px; }
 .s-pergunta .hint svg { width: 56px; height: 56px; }
 
+
+/* Visual-journalism annotations (idea from bang-motion's "jurnalisme visual",
+   MIT): point at the proof inside the image. Place inside an .img container,
+   positioned in px over the visible image; one or two per slide at most.
+   .anota      dashed ellipse around the detail
+   .anota-tag  small mono tag naming the detail (put it next to the ellipse)
+   .marca      highlighter behind a key word in a headline (creme or barro ground);
+               .marca.l on dark ground */
+.anota { position: absolute; z-index: 2; border: 5px dashed var(--urucum); border-radius: 50%; }
+.anota-tag { position: absolute; z-index: 2; font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .12em; text-transform: uppercase; background: var(--urucum); color: var(--creme); padding: 8px 14px; }
+.marca { background: linear-gradient(transparent 60%, rgba(200, 70, 44, .38) 60%); padding: 0 .06em; }
+.marca.l { background: linear-gradient(transparent 60%, rgba(63, 214, 198, .35) 60%); }

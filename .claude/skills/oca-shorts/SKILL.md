@@ -24,13 +24,13 @@ Leia antes de criar:
 - **Sem modelos generativos.** Formas em SVG feitas em código; trilha e SFX sintetizados por `scripts/audio.mjs`. Nunca coloque música comercial no arquivo (veja audio.md).
 - **Paleta.** Barro `#915729`, creme `#f8f4e1`, terra `#4a2a12`, noite `#24140a`. Dois acentos que separam as eras: **urucum** `#c8462c` só no "antes", **luz** `#3fd6c6` só no "hoje". Os dois juntos só no quadro final, quando as eras se encontram.
 - **Tipo.** Outfit (títulos, em minúsculas, como o logo) e JetBrains Mono (etiquetas de era e dados, em maiúsculas). Texto em português do Brasil.
-- **Texto na tela.** No máximo 3 elementos por vez (etiqueta de era, frase, uma etiqueta pequena). Frase com até 6 palavras. Gancho em até 0,5 s, sobre barra urucum. Sem hashtag, link ou emoji na tela. Zero travessões.
+- **Texto na tela.** No máximo 2 níveis de texto na tela (etiqueta de era e frase); o rótulo do saber vive no mundo, ao lado do objeto (`RotuloMundo`). Frase com até 6 palavras. Gancho em até 0,5 s, sobre barra urucum. Sem hashtag, link ou emoji na tela. Zero travessões.
 - **Especificação.** 1080x1920, 30 fps, 15 a 25 s (450 a 750 quadros), H.264 com áudio, masterizado a -14 LUFS (`scripts/master.sh`).
 - **Área segura.** Texto e ação entre y 220 e y 1500; margem lateral de 64 px.
 
 ## 2. O briefing
 
-Gere candidatos com o motor de ideacao.md. Depois preencha:
+Gere candidatos com o motor de ideacao.md e escreva **3 candidatos**; escolha 1 com o motivo (vem do bang-motion: escolher entre três evita cair sempre no mesmo esqueleto). Depois preencha:
 
 ```
 Formato:    Ponte | Duelo de eras | Linha do tempo | Herança | Mutirão
@@ -42,6 +42,7 @@ Metáfora:   o objeto que atravessa as eras (as Plêiades, a semente, a página,
 Beats:      quadros de cada bloco (gancho, antes, portal, hoje, encontro, end card)
 Som:        trilha + ambiência + SFX por contato
 Legenda:    rascunho seguindo legenda.md, com a fonte
+Impressão:  cena antes · cena hoje · tag · objeto/rótulo · pergunta (compare com os 3 últimos)
 ```
 
 Teste antes de construir: descreva o último quadro em uma frase. Se alguém, sem som, não entender a ponte só com ele, troque a metáfora.
@@ -90,20 +91,24 @@ Só entregue com **PASS** e depois de abrir a folha de contato.
 - **`acoes.tsx`**: `ator(base, batidas)` com 19 ações (`andar`, `olhar-ceu`, `plantar`, `colher`, `segurar`, `digitar`, `entregar`, `comemorar`, `acolher`...), `<AtorFig>` e `<Sons>` (sons automáticos de cada ação). Tabela em fichas.md.
 - **`brand.tsx`**: cores, `Fonts`, `Label` (entra com mola e leve giro, sai com colapso cúbico; `bar` vira gancho; texto simples quebra linha com `\n` e encolhe sozinho para caber), `EraTag` ("HÁ SÉCULOS", "HOJE"), `Watermark` (@OCAMISSOES), `EndCard` (wordmark + "ecossistema de inovação das Missões").
 - **`figure.tsx`**: `Figure` com `look` `raiz` | `inova` | `povo`, `view` `perfil` | `frente` | `costas`, `prop` `cesto` | `semente` | `cuia` | `livro` | `tablet` | `celular`; poses de perfil `STAND`, `LOOK_UP`, `KNEEL`, `SIT`, `CARRY`, `HOLD`, `WAVE`, `walk()`, e de frente `FRENTE`, `FRENTE_UP`, `FRENTE_OPEN`, `FRENTE_HOLD`, `FRENTE_WAVE`; `mixPose()`.
-- **`world.tsx`**: `Stage` (céu por era e `hora` `dia` | `entardecer` | `noite`, câmera), `shot(tipo, ponto)` (planos `aberto`, `medio`, `close`, `detalhe`, `ceu`), `pickShot` (cortes secos), `Hills`, `Stars`, `Pleiades`, `Moon`, `Sol`, `Oca`, `Ruina`, `Erval`, `Roca`, `Sprout`, `Fogueira`, `Rio`, `Canoa`, `Prensa`, `Livro`, `Cuia`, `SacoErva`, `OcaModerna`, `Nuvens`, `Chuva`, `Ema`, `QueroQuero`.
+- **`world.tsx`**: `Stage` (céu por era e `hora` `dia` | `entardecer` | `noite`, câmera), `shot(tipo, ponto)` (planos `aberto`, `medio`, `close`, `detalhe`, `ceu`), `pickShot` (cortes secos), `Hills`, `Stars`, `Pleiades`, `Moon`, `Sol`, `Oca`, `Ruina`, `Erval`, `Roca`, `Sprout`, `Fogueira`, `Rio`, `Canoa`, `Prensa`, `Livro`, `Cuia`, `SacoErva`, `OcaModerna`, `Nuvens`, `Chuva`, `Ema`, `QueroQuero`; vida de cenário `Capim`, `Fumaca`, `Passaros`, `LuzesLonge`, `AnelFundo`, `RotuloMundo`; câmera por planos `camera(f, chaves)`.
 - **`tech.tsx`**: `GlowDef`, `HoloPanel`, `Satellite` (com `ping`), `Drone`, `Nuvem`, `Celular`, `Notebook`, `Antena`, `PainelSolar`, `Sensor`, `CircuitRoots` (raízes que viram circuito: a assinatura visual), `DataMotes`, `QRCode`, `MapPin`, `ChatBalao`, `Grafico`, `Trator`, `EstacaoClima`, `Lampada`, `Rede`.
-- **`fx.tsx`**: `Grain` (textura de papel fixa), `Vignette`, `Portal` (o "o" do logo como íris entre eras), `Particles` (`brasa`, `poeira`, `vagalume`, `dados`), `typed`, `drawOffset`, e `BoilDef` (traço vibrando: só num elemento, por menos de 1 s, veja estilo.md).
-- **`sound.tsx`**: `<Music name volume stopAt>`, `<Sfx name at volume length>`, `beatFrames()`, `TRAVESSIA_TURN` (quadro 288, onde a trilha `travessia` vira para o "hoje"). Nomes tipados: erro de digitação quebra o `tsc`.
+- **`fx.tsx`**: `Grain` (textura de papel fixa), `Vignette`, `Portal` (o "o" do logo como íris entre eras), `Deslize` (troca de lugar na mesma era: 96 px + desfoque), `Particles` (`brasa`, `poeira`, `vagalume`, `dados`), `typed`, `drawOffset`, e `BoilDef` (traço vibrando: só num elemento, por menos de 1 s, veja estilo.md).
+- **`sound.tsx`**: `<Music name volume stopAt>`, `<Sfx name at volume length>`, `<Locucao name at>` (narração gravada; `scripts/pausas-vo.mjs` acha o quadro de cada frase), `beatFrames()`, `TRAVESSIA_TURN` (quadro 288, onde a trilha `travessia` vira para o "hoje"). Nomes tipados: erro de digitação quebra o `tsc`.
 
 ## 5. Checklist (cada still e o arquivo final)
 
 - [ ] Sem som, a ponte é clara em 3 s, e o último quadro sozinho conta a história.
 - [ ] Gancho na tela até 0,5 s; algo se move já no primeiro quadro; mudança visual a cada 1 a 3 s.
-- [ ] No máximo 3 textos, frases com até 6 palavras, tudo dentro da área segura.
+- [ ] No máximo 2 textos na tela (mais o rótulo no mundo), frases com até 6 palavras, tudo dentro da área segura.
 - [ ] Urucum só no "antes", luz só no "hoje" (os dois juntos só no encontro final).
 - [ ] A Guardiã aparece como especialista; nenhum estereótipo; os dois personagens se encontram no fim.
 - [ ] Personagens nunca cortados pela borda, nunca flutuando, nunca atravessando objetos.
 - [ ] Nada treme: grão fixo, sem `BoilDef` na cena inteira, brilhos lentos (mais de 20 quadros por ciclo), câmera sem chacoalhar.
+- [ ] Planos variam a cada batida (aberto, médio, close, detalhe); nenhum quadro parece miniatura (personagem pequeno no meio de chão vazio); nenhum close corta personagem pela metade; nada do mundo sob o texto (acima de y 450 na tela).
+- [ ] Pelo menos 6 coisas vivas por cena além dos personagens; personagens com sombra de contato.
+- [ ] Teste do slide: este quadro poderia ser um slide de empresa? O olho sabe para onde ir em 0,2 s? Algo se move por causa da câmera? (bang-motion)
+- [ ] `node scripts/compara-fichas.mjs` sem ATENÇÃO: o vídeo difere dos 3 anteriores em pelo menos 3 de 5 pontos da impressão digital.
 - [ ] Pelo menos 2 vistas ou 2 planos diferentes no vídeo (biblioteca.md), para não ficar tudo no mesmo enquadramento.
 - [ ] Cada contato tem som no mesmo quadro; ambiência ligada; trilha abaixo dos SFX.
 - [ ] Toda referência está no acervo; nenhum número sem fonte; zero travessões.
