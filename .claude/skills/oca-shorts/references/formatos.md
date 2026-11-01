@@ -54,6 +54,19 @@ Muitos juntos fazem o que um sozinho não faz.
 - **Câmera:** travada e larga; os que chegam entram pela borda.
 - **Som:** `mutirao`; `passo-terra` a cada chegada, `success` quando o objeto se move.
 
+## 6. Explicador narrado (30 a 60 s)
+
+Expansão vinda do fluxo de explainers do bang-motion (MIT): quando o saber pede mais explicação do que cabe em 5 palavras na tela. **A voz é de uma pessoa da equipe ou da comunidade**, gravada (nada de voz gerada por IA, pela regra de áudio da skill).
+
+- **Para:** pautas mais ricas (Suárez e os telescópios, o ferro do itacuru, a roça comum), em série ou para o YouTube Shorts.
+- **Estrutura:** 3 a 5 lugares (estágios), cada um vivo (pelo menos 6 coisas se movendo), câmera que muda de plano a cada frase, `Deslize` entre lugares da mesma era e o `Portal` uma vez na virada para o "hoje". Sem legenda escrita da fala na tela: o texto na tela continua curto (etiqueta de era, um número, um rótulo no mundo). A legenda do post leva a fala completa.
+- **Passo a passo:**
+  1. Escreva o roteiro da locução: um parágrafo por lugar, números por extenso, 110 a 150 palavras por minuto. Salve em `out/<Id>.locucao.md` e **mande o roteiro na mensagem** pedindo a gravação (voz natural, pausa de 1 s entre parágrafos, wav ou mp3).
+  2. Monte a cena sem voz, com tempo de leitura estimado.
+  3. Quando o áudio chegar: `public/audio/vo/<arquivo>`, rode `node scripts/pausas-vo.mjs public/audio/vo/<arquivo>` e reposicione as batidas nos quadros que ele imprime (um parágrafo = um lugar).
+  4. `<Locucao name="<arquivo>" />` na composição; trilha a 0,12 (18 a 20 dB abaixo da voz); duração da composição = duração da voz + 1,5 s de end card.
+  5. Portão final: `MAX_S=60 bash scripts/qa.sh <Id>` (o padrão aceita só 15 a 25,5 s).
+
 ---
 
 ## Séries

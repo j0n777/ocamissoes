@@ -47,6 +47,12 @@ Não existe duração que torne uma música com direitos "liberada": trechos de 
 - Pausa antes da virada: `<Music stopAt>` + `tape-stop` 8 quadros antes, 0,2 a 0,4 s de quase silêncio, e a virada como som mais forte.
 - Celular corta abaixo de ~150 Hz: junte `boom` com algo agudo (`ding`, `sparkle`).
 
+## Narração gravada
+
+- `<Locucao name="arquivo.wav" at={0} />` toca `public/audio/vo/arquivo.wav` (voz de uma pessoa, gravada; nunca voz gerada).
+- `node scripts/pausas-vo.mjs public/audio/vo/arquivo.wav` lista cada frase (início e fim em segundos e em quadros) e marca as pausas de 0,7 s ou mais como fim de parágrafo; grava `arquivo.pausas.json`. Ajuste o limiar (`-35` dB) se a gravação tiver ruído.
+- Com voz, a trilha cai para cerca de 0,12 e os SFX ficam entre 0,3 e 0,5.
+
 ## Loudness
 
 - Depois do render, rode `bash scripts/master.sh out/<nome>.mp4`: loudnorm em dois passos para **-14 LUFS** e true peak -1,5 dBTP (padrão de Reels, Shorts e TikTok), vídeo copiado sem recompressão.

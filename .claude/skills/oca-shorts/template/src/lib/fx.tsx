@@ -99,3 +99,30 @@ export const typed = (text: string, frame: number, start: number, perChar = 1.5)
 
 // Draw-on progress for a stroke with pathLength={1} and strokeDasharray="1".
 export const drawOffset = (frame: number, start: number, length = 40) => 1 - easeOut(clamp01((frame - start) / length));
+
+// "Deslize": the cut between two stages of the same era (bang-motion
+// "kartun panggung", MIT). The old stage slides out 96 px in 0.28 s
+// (offset -d*q^2), cut, the new one slides in from +d in 0.42 s
+// (offset d*(1-q)^3), blur up to 10 px, no scale bump. Use it only when the
+// place really changes; inside the same place, change the shot instead.
+// `vertical` slides 72 px up/down instead of sideways.
+export const Deslize = ({ frame, at, before, after, vertical = false }: { frame: number; at: number; before: ReactNode; after: ReactNode; vertical?: boolean }) => {
+  const d = vertical ? 72 : 96;
+  const outLen = 8, inLen = 13;
+  let offset = 0, blur = 0;
+  const showAfter = frame >= at;
+  if (frame >= at - outLen && frame < at) {
+    const q = (frame - (at - outLen)) / outLen;
+    offset = -d * q * q;
+    blur = 10 * q;
+  } else if (frame >= at && frame < at + inLen) {
+    const q = (frame - at) / inLen;
+    offset = d * Math.pow(1 - q, 3);
+    blur = 10 * (1 - q);
+  }
+  return (
+    <AbsoluteFill style={{ transform: vertical ? `translateY(${offset}px)` : `translateX(${offset}px)`, filter: blur > 0.2 ? `blur(${blur.toFixed(1)}px)` : undefined }}>
+      {showAfter ? after : before}
+    </AbsoluteFill>
+  );
+};

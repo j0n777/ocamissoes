@@ -142,13 +142,31 @@ const sonsDe = (b: Beat): SomEvento[] => {
   return ev;
 };
 
+// Idle life (bang-motion "kartun panggung", MIT): a character that is not
+// walking still breathes: torso about 1 degree every 1.7 s, head 1.7 degrees
+// every 2.3 s, arms 1 to 1.5 degrees every 1.9 s, each character with its own
+// phase. Slow on purpose: life, never jitter.
+const idle = (p: Pose, f: number, phase: number): Pose => ({
+  ...p,
+  lean: p.lean + 0.019 * Math.sin((f / 51) * 2 * Math.PI + phase),
+  head: p.head + 0.03 * Math.sin((f / 69) * 2 * Math.PI + phase * 1.3),
+  armL: { ...p.armL, a: p.armL.a + 0.02 * Math.sin((f / 57) * 2 * Math.PI + phase * 0.7) },
+  armR: { ...p.armR, a: p.armR.a + 0.02 * Math.sin((f / 57) * 2 * Math.PI + phase * 1.9) },
+});
+
 export type Ator = { estado: (f: number) => Estado; sons: SomEvento[]; beats: Beat[] };
 
 export const ator = (base: Base, beats: Beat[]): Ator => {
   const sorted = [...beats].sort((a, b) => a.de - b.de);
   const start: Pose = { ...(base.view && base.view !== "perfil" ? FRENTE : STAND), x: base.x, y: base.y, facing: base.facing ?? 1 };
   const startView = base.view ?? "perfil";
+  const phase = (base.x * 0.013) % (2 * Math.PI);
   const estado = (f: number): Estado => {
+    const e = estadoBase(f);
+    const walking = sorted.some((b) => b.faz === "andar" && f >= b.de && f < b.ate);
+    return walking ? e : { ...e, pose: idle(e.pose, f, phase) };
+  };
+  const estadoBase = (f: number): Estado => {
     let pose = start;
     let view = startView;
     for (const b of sorted) {

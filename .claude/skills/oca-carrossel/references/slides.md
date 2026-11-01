@@ -37,6 +37,8 @@ Fique no mesmo sistema:
 
 ## Imagens
 
+- **Anotações (jornalismo visual):** dentro do `.img`, uma `.anota` (elipse tracejada urucum) em volta do detalhe que prova o título e uma `.anota-tag` curta ao lado ("o autor", "1740 a 1841"). Uma ou duas por slide. Posição em px sobre a imagem visível: renderize, confira e ajuste. Exemplos nos slides de imagem dos dois modelos.
+- **Marca-texto:** `<span class="marca">palavra</span>` no título (urucum) ou `.marca.l` em fundo escuro (luz). Uma palavra por slide, no máximo.
 - Envolva a imagem num `<div class="img doc|duo|ia">` (ou `img duo bg-img` para fundo). Regras completas em imagens.md.
 - `object-position` decide o recorte: para página de livro, mostre o topo (`50% 10%`).
 - Fotos da OCA (eventos): use `.doc`; com pessoas, só com autorização.

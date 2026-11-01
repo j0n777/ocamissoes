@@ -6,8 +6,8 @@ import { CREME, EndCard, EraTag, Label, LUZ, MATE, PALHA, TERRA, URUCUM, Waterma
 import { Figure, SIT, STAND } from "../lib/figure";
 import { Grain, Particles, Portal, Vignette } from "../lib/fx";
 import { Music, Sfx, TRAVESSIA_TURN } from "../lib/sound";
-import { ChatBalao, CircuitRoots, DataMotes, Drone, GlowDef, Grafico, HoloPanel, MapPin, Notebook, Nuvem, QRCode, Rede, Satellite, Sensor } from "../lib/tech";
-import { type Cam, Erval, Fogueira, Hills, Livro, Moon, Oca, OcaModerna, Pleiades, Prensa, Ruina, SacoErva, Sprout, Stage, Stars, type Hora } from "../lib/world";
+import { ChatBalao, CircuitRoots, DataMotes, Drone, GlowDef, Grafico, HoloPanel, MapPin, Nuvem, QRCode, Rede, Satellite, Sensor } from "../lib/tech";
+import { AnelFundo, type Cam, type CamKey, camera, Erval, Fogueira, Fumaca, Hills, Moon, Oca, OcaModerna, Passaros, Pleiades, Prensa, RotuloMundo, Ruina, SacoErva, Sprout, Stage, Stars, type Hora } from "../lib/world";
 
 // The Ponte format as a fill-in template. A video is a PonteSpec (data, no
 // drawing code): pick one "antes" scene and one "hoje" scene from the menus
@@ -71,7 +71,10 @@ export const checaPonte = (s: PonteSpec) => {
 
 // Every scene returns what goes in the world, its characters (for sounds),
 // extra sounds, and the screen point where the portal closes.
-type Cena = { mundo: ReactNode; atores: Ator[]; sons?: ReactNode; foco: [number, number]; hora?: Hora; defs?: ReactNode };
+// `cams`: the shot plan (lib/world camera keys). Antes scenes must end back on
+// CAM by frame 262 so the portal closes on `foco`. `rotuloEm`: where the
+// rotulo lives in the world (it moves with the camera, next to the saber).
+type Cena = { mundo: ReactNode; atores: Ator[]; sons?: ReactNode; foco: [number, number]; cams: CamKey[]; rotuloEm?: [number, number]; hora?: Hora; defs?: ReactNode };
 
 const CAM: Cam = { x: 560, y: 1000, zoom: 1.18 };
 const toScreen = (x: number, y: number): [number, number] => [540 + (x - CAM.x) * CAM.zoom, 960 + (y - CAM.y) * CAM.zoom];
@@ -87,11 +90,13 @@ const ANTES: Record<CenaAntes, (f: number) => Cena> = {
     return {
       atores: [g],
       foco: toScreen(635, 665),
+      rotuloEm: [640, 760],
+      cams: [{ at: 0, cam: { x: 420, y: 1060, zoom: 1.4 } }, { at: 62, cam: { x: 560, y: 840, zoom: 1.3 }, dur: 24 }, { at: 152, cam: { x: 540, y: 1150, zoom: 2.2 } }, { at: 236, cam: CAM, dur: 26 }],
       mundo: (
         <>
           <Stars frame={f} />
           <Pleiades x={600} y={660} frame={f} glow={easeOut(progress(f, 70, 30))} link={easeOut(progress(f, 90, 40))} />
-          <Hills ground={GROUND} era="antes" />
+          <Hills ground={GROUND} era="antes" capim={f} />
           <Oca x={900} ground={GROUND} w={320} h={210} />
           {[560, 650, 740].map((x, i) => (
             <Sprout key={x} x={x} ground={GROUND} grow={progress(f, 190 + i * 14, 50)} size={1.5} />
@@ -106,7 +111,7 @@ const ANTES: Record<CenaAntes, (f: number) => Cena> = {
   // The moon's phases to time the work.
   lua: (f) => {
     const g = ator({ x: 260, y: GROUND }, [
-      { de: 20, ate: 60, faz: "andar", x: 430 },
+      { de: 20, ate: 60, faz: "andar", x: 560 },
       { de: 60, ate: 160, faz: "olhar-ceu" },
       { de: 162, ate: 262, faz: "colher" },
     ]);
@@ -114,6 +119,8 @@ const ANTES: Record<CenaAntes, (f: number) => Cena> = {
     return {
       atores: [g],
       foco: toScreen(620, 640),
+      rotuloEm: [620, 760],
+      cams: [{ at: 0, cam: { x: 430, y: 1060, zoom: 1.4 } }, { at: 62, cam: { x: 600, y: 820, zoom: 1.3 }, dur: 24 }, { at: 162, cam: { x: 640, y: 1050, zoom: 1.7 } }, { at: 236, cam: CAM, dur: 26 }],
       // The phase is a mask (a dark disc would show against the gradient sky).
       defs: (
         <mask id="fase-lua">
@@ -127,7 +134,7 @@ const ANTES: Record<CenaAntes, (f: number) => Cena> = {
           <g mask="url(#fase-lua)">
             <Moon x={620} y={640} r={60} />
           </g>
-          <Hills ground={GROUND} era="antes" />
+          <Hills ground={GROUND} era="antes" capim={f} />
           <Erval x={720} ground={GROUND} size={0.95} frame={f} />
           <AtorFig a={g} f={f} look="raiz" size={340} prop="cesto" />
         </>
@@ -145,10 +152,12 @@ const ANTES: Record<CenaAntes, (f: number) => Cena> = {
     return {
       atores: [g],
       foco: toScreen(690, 960),
+      rotuloEm: [700, 780],
+      cams: [{ at: 0, cam: { x: 380, y: 1060, zoom: 1.35 } }, { at: 72, cam: { x: 630, y: 1040, zoom: 1.7 }, dur: 22 }, { at: 202, cam: { x: 520, y: 1080, zoom: 1.5 } }, { at: 236, cam: CAM, dur: 26 }],
       hora: "dia",
       mundo: (
         <>
-          <Hills ground={GROUND} era="antes" />
+          <Hills ground={GROUND} era="antes" capim={f} />
           <Erval x={700} ground={GROUND} size={1.2} frame={f} />
           <Erval x={980} ground={GROUND} size={0.8} frame={f + 30} />
           <AtorFig a={g} f={f} look="raiz" size={340} prop="cesto" />
@@ -168,10 +177,12 @@ const ANTES: Record<CenaAntes, (f: number) => Cena> = {
     return {
       atores: [g],
       foco: toScreen(700, 1000),
+      rotuloEm: [620, 890],
+      cams: [{ at: 0, cam: { x: 400, y: 1060, zoom: 1.4 } }, { at: 62, cam: { x: 600, y: 1060, zoom: 1.75 } }, { at: 182, cam: { x: 500, y: 1080, zoom: 2.1 } }, { at: 236, cam: CAM, dur: 26 }],
       mundo: (
         <>
           <Stars frame={f} opacity={0.5} />
-          <Hills ground={GROUND} era="antes" />
+          <Hills ground={GROUND} era="antes" capim={f} />
           <Ruina x={930} ground={GROUND} w={300} />
           <Prensa x={690} ground={GROUND} size={0.9} press={press} />
           <AtorFig a={g} f={f} look="raiz" size={340} prop={f >= 182 ? "livro" : "none"} />
@@ -196,12 +207,15 @@ const ANTES: Record<CenaAntes, (f: number) => Cena> = {
     return {
       atores: [g],
       foco: toScreen(560, 1180),
+      rotuloEm: [560, 1000],
+      cams: [{ at: 0, cam: { x: 560, y: 1060, zoom: 1.3 } }, { at: 40, cam: { x: 740, y: 1120, zoom: 1.75 } }, { at: 150, cam: { x: 400, y: 1060, zoom: 1.8 } }, { at: 236, cam: CAM, dur: 26 }],
       hora: "noite",
       mundo: (
         <>
           <Stars frame={f} />
-          <Hills ground={GROUND} era="hoje" />
+          <Hills ground={GROUND} era="hoje" capim={f} />
           <Fogueira x={560} ground={GROUND} frame={f} size={1.1} />
+          <Fumaca x={560} y={GROUND - 110} frame={f} />
           {[0, 1, 2].map((i) => (
             <Figure key={i} pose={{ ...STAND, ...SIT, x: 690 + i * 110, y: GROUND, facing: -1 }} look="povo" depth={0.2 + i * 0.25} size={300} />
           ))}
@@ -222,12 +236,13 @@ const HOJE: Record<CenaHoje, (f: number, painel: string) => Cena> = {
     return {
       atores: [i],
       foco: [0, 0],
+      cams: [{ at: TURN, cam: { x: 470, y: 1040, zoom: 1.35 } }, { at: 356, cam: { x: 650, y: 920, zoom: 1.6 }, dur: 22 }, { at: 432, cam: { x: 600, y: 980, zoom: 1.3 } }],
       defs: <GlowDef />,
       mundo: (
         <>
           <Stars frame={f} opacity={0.8} />
           <Satellite from={[90, 790]} to={[1040, 770]} t={progress(f, TURN + 12, 260)} ping={f > 330 && f < 460 ? (f - 330) / 60 : 0} target={[650, GROUND]} />
-          <Hills ground={GROUND} era="hoje" />
+          <Hills ground={GROUND} era="hoje" luzes={f} />
           <CircuitRoots seeds={[560, 650, 740]} ground={GROUND} t={progress(f, 345, 70)} depth={210} />
           {[560, 650, 740].map((x) => (
             <Sprout key={x} x={x} ground={GROUND} grow={1} size={1.5} />
@@ -250,12 +265,13 @@ const HOJE: Record<CenaHoje, (f: number, painel: string) => Cena> = {
     return {
       atores: [i],
       foco: [0, 0],
+      cams: [{ at: TURN, cam: { x: 470, y: 1040, zoom: 1.35 } }, { at: 352, cam: { x: 680, y: 1000, zoom: 1.5 }, dur: 22 }, { at: 432, cam: { x: 600, y: 1000, zoom: 1.3 } }],
       defs: <GlowDef />,
       mundo: (
         <>
           <Stars frame={f} opacity={0.6} />
           <Drone x={lerp(150, 900, easeInOut(progress(f, TURN, 200)))} y={700} frame={f} scale={0.9} />
-          <Hills ground={GROUND} era="hoje" />
+          <Hills ground={GROUND} era="hoje" luzes={f} />
           {[600, 760, 920].map((x, k) => (
             <Sensor key={x} x={x} ground={GROUND} frame={f} size={1.1} on={progress(f, 320 + k * 15, 20)} />
           ))}
@@ -279,11 +295,12 @@ const HOJE: Record<CenaHoje, (f: number, painel: string) => Cena> = {
     return {
       atores: [i],
       foco: [0, 0],
+      cams: [{ at: TURN, cam: { x: 480, y: 1040, zoom: 1.35 } }, { at: 360, cam: { x: 680, y: 960, zoom: 1.5 }, dur: 22 }, { at: 432, cam: { x: 620, y: 1000, zoom: 1.3 } }],
       defs: <GlowDef />,
       mundo: (
         <>
           <Stars frame={f} opacity={0.6} />
-          <Hills ground={GROUND} era="hoje" />
+          <Hills ground={GROUND} era="hoje" luzes={f} />
           <SacoErva x={700} ground={GROUND} size={1.3} tag />
           {scan > 0 && scan < 1 && <line x1={470} y1={1090} x2={760} y2={1090 + (scan - 0.5) * 60} stroke={LUZ} strokeWidth={4} opacity={0.8} />}
           {f >= 372 && <line x1={735} y1={1100} x2={760} y2={840} stroke={LUZ} strokeWidth={3} strokeDasharray="8 8" opacity={0.7} />}
@@ -307,14 +324,15 @@ const HOJE: Record<CenaHoje, (f: number, painel: string) => Cena> = {
     return {
       atores: [i],
       foco: [0, 0],
+      cams: [{ at: TURN, cam: { x: 470, y: 1040, zoom: 1.35 } }, { at: 350, cam: { x: 640, y: 900, zoom: 1.6 }, dur: 22 }, { at: 432, cam: { x: 600, y: 960, zoom: 1.3 } }],
       defs: <GlowDef />,
       mundo: (
         <>
           <Stars frame={f} opacity={0.6} />
-          <Hills ground={GROUND} era="hoje" />
+          <Hills ground={GROUND} era="hoje" luzes={f} />
           <ChatBalao x={740} y={760} t={progress(f, 320, 30)} de="pessoa" lines={2} w={340} />
           <ChatBalao x={700} y={930} t={progress(f, 360, 50)} de="ia" lines={3} w={400} />
-          <Nuvem x={760} y={560} frame={f} size={0.6} />
+          <Nuvem x={900} y={650} frame={f} size={0.5} />
           <DataMotes x={760} y={700} frame={f} start={410} count={10} spread={140} />
           <AtorFig a={i} f={f} look="inova" size={340} prop="tablet" glow={0.9} />
         </>
@@ -334,11 +352,12 @@ const HOJE: Record<CenaHoje, (f: number, painel: string) => Cena> = {
     return {
       atores: [i],
       foco: [0, 0],
+      cams: [{ at: TURN, cam: { x: 470, y: 1040, zoom: 1.35 } }, { at: 345, cam: { x: 680, y: 960, zoom: 1.45 }, dur: 22 }, { at: 432, cam: { x: 620, y: 1000, zoom: 1.3 } }],
       defs: <GlowDef />,
       mundo: (
         <>
           <Stars frame={f} opacity={0.6} />
-          <Hills ground={GROUND} era="hoje" />
+          <Hills ground={GROUND} era="hoje" luzes={f} />
           <OcaModerna x={760} ground={GROUND} w={420} h={250} lit={progress(f, 320, 30)} />
           <Rede nos={nos} t={progress(f, 340, 90)} frame={f} />
           <AtorFig a={i} f={f} look="inova" size={340} />
@@ -365,6 +384,7 @@ export const PonteVideo = ({ spec }: { spec: PonteSpec }) => {
   const [fx, fy] = antes.foco;
   // Day scenes have a light sky: text turns terra so it stays readable.
   const ink = antes.hora === "dia" ? TERRA : CREME;
+  const camAntes = camera(f, antes.cams);
 
   // Encontro: the guardian walks in; on 500 a cut to a closer shot and both
   // turn to the camera.
@@ -374,12 +394,12 @@ export const PonteVideo = ({ spec }: { spec: PonteSpec }) => {
   ]);
   const inovEnc = ator({ x: 400, y: GROUND }, [{ de: 500, ate: 560, faz: s.hoje.cena === "rede" ? "acolher" : "mostrar" }]);
   const encontro = f >= 500;
-  const camHoje: Cam = encontro ? { x: 300, y: 1060, zoom: 1.5 } : { ...CAM, zoom: CAM.zoom * lerp(1, 1.05, easeInOut(progress(f, TURN, 200))) };
+  const camHoje: Cam = encontro ? camera(f, [{ at: 500, cam: { x: 300, y: 1060, zoom: 1.5 } }]) : camera(f, hoje.cams);
   const propHoje = s.hoje.cena === "satelite" || s.hoje.cena === "ia-texto" ? "tablet" : s.hoje.cena === "rede" ? "none" : "celular";
 
   const before = (
     <Stage
-      cam={{ ...CAM, zoom: CAM.zoom * lerp(1, 1.06, easeInOut(progress(f, 0, 270))) }}
+      cam={camAntes}
       era="antes"
       hora={antes.hora}
       defs={antes.defs}
@@ -392,16 +412,17 @@ export const PonteVideo = ({ spec }: { spec: PonteSpec }) => {
           <Label frame={f} at={150} y={380} size={70} color={ink}>
             {s.antes.frase}
           </Label>
-          {s.antes.rotulo && (
-            <Label frame={f} at={112} y={700} size={26} mono color={antes.hora === "dia" ? TERRA : PALHA}>
-              {s.antes.rotulo}
-            </Label>
-          )}
           <Watermark color={ink} />
         </>
       }
     >
+      {antes.hora !== "noite" && <Passaros frame={f} de={40} ate={200} y={antes.hora === "dia" ? 560 : 600} />}
       {antes.mundo}
+      {s.antes.rotulo && antes.rotuloEm && (
+        <RotuloMundo x={antes.rotuloEm[0]} y={antes.rotuloEm[1]} frame={f} at={100} zoom={camAntes.zoom} color={antes.hora === "dia" ? TERRA : PALHA}>
+          {s.antes.rotulo}
+        </RotuloMundo>
+      )}
     </Stage>
   );
 
@@ -426,10 +447,11 @@ export const PonteVideo = ({ spec }: { spec: PonteSpec }) => {
         </>
       }
     >
+      <AnelFundo frame={f} x={560} y={700} />
       {encontro ? (
         <>
           <Stars frame={f} opacity={0.8} />
-          <Hills ground={GROUND} era="hoje" />
+          <Hills ground={GROUND} era="hoje" luzes={f} />
           <CircuitRoots seeds={[560, 650, 740]} ground={GROUND} t={1} depth={210} />
           <AtorFig a={guardia} f={f} look="raiz" size={340} />
           <AtorFig a={inovEnc} f={f} look="inova" size={340} prop={propHoje} glow={0.9} />

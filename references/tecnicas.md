@@ -48,3 +48,27 @@ Levantamento feito em 2026-10-30 nos repositórios do Jonata que já fazem víde
 ## Alerta de segurança (fora deste repo)
 
 `j0n777/reels-editor/pipeline/config.json` tem chaves de API em texto puro (Gemini e Pollinations). Recomenda-se revogar e remover do repositório. Os valores não foram copiados para cá.
+
+## bang-motion (Bang Tutorial, MIT), estudado em 2026-10-31
+
+[github.com/bangtutorial/bang-motion](https://github.com/bangtutorial/bang-motion), v1.19.0. Skill de motion graphics em HTML + GSAP, com regras "anti-PPT" verificáveis no código, menus de conceitos e estilos, 7 starters e scripts de verificação. É MIT: ideias e trechos podem ser reaproveitados com crédito. O stack é outro (HTML/GSAP, 16:9); aqui entrou o que vale para Remotion 9:16 e para o nosso estilo.
+
+| Lição | De onde (no bang-motion) | Onde entrou |
+|---|---|---|
+| "Zoom" é trocar o tamanho do plano (aberto, médio, close) a cada batida, com push lento no hold e zoom em escala log | `references/techniques.md` §3b (v1.19) | `camera(f, chaves)` em `lib/world.tsx`; plano por cena no `Ponte` |
+| Nada de miniatura: zoom mínimo, personagem grande no quadro | `references/kartun-panggung.md` Hukum 1 | estilo.md "Câmera"; fichas com zoom de 1,3 a 2,2 |
+| Pelo menos 10 coisas vivas por palco (aqui, 6 no 9:16) | `kartun-panggung.md` Hukum 3 | `Capim`, `Fumaca`, `Passaros`, `LuzesLonge`, `AnelFundo`; checklist |
+| Respiração do personagem parado (tronco, cabeça, braços, fase própria) | `kartun-panggung.md` Hukum 4 | `idle` em `lib/acoes.tsx` |
+| Sombra elíptica de contato sob os pés | `kartun-panggung.md` Hukum 4 | `Figure` (`sombra`) |
+| Troca de palco: sai 96 px em 0,28 s, corte, entra em 0,42 s, desfoque até 10 px | `kartun-panggung.md` Hukum 2 | `Deslize` em `lib/fx.tsx` |
+| Texto do mundo (diegético) em vez de mais um nível de texto na tela | `kartun-panggung.md` Hukum 6; `anti-ppt.md` | `RotuloMundo`; rótulo do Ponte |
+| Entrada e saída assimétricas, desfoque direcional no texto | `anti-ppt.md` princípio 9; `techniques.md` §2 | `Label` em `lib/brand.tsx` |
+| Fundo nunca parado, com forma da marca girando devagar | `techniques.md` §7c (#6) | `AnelFundo` |
+| Três candidatos, um escolhido; impressão digital da estrutura para não repetir | `references/opener-konsep.md` (Hukum kerangka) | briefing do SKILL.md; `scripts/compara-fichas.mjs` |
+| Teste rápido de "isto é um slide?" | `anti-ppt.md` "Kalibrasi rasa" | checklist do SKILL.md |
+| Fluxo de explainer com voz: roteiro na mensagem, gravação humana, pausas para sincronizar | `references/explainer.md` "Penyerahan"; `scripts/vo-pauses.html` | formato 6 em formatos.md; `scripts/pausas-vo.mjs`; `<Locucao>` |
+| Jornalismo visual: elipse tracejada e etiqueta sobre a foto-prova, marca-texto | `assets/starter-explainer-jurnalisme.html` | `.anota`, `.anota-tag`, `.marca` no carrossel |
+
+**Não trazido (por escolha):** WebGL/Three.js e glow (fora do nosso estilo flat), cabeças raster geradas por IA com expressões (nossos personagens são sem rosto, e a regra do vídeo é sem geração), ponte com After Effects, legendas sem ponto final (mantivemos a frase com ponto, estilo aprovado da casa).
+
+**Ideias guardadas:** a regra "toda entidade citada aparece na tela" (`explainer.md`) para o formato narrado; o menu de 12 movimentos de fundo e 9 famílias de render (`techniques.md` §7c e §7e) se um dia houver séries com outra estética; "instrumentos" de explicação (mapa com rota, perfil, velocímetro) como cenas novas do menu.

@@ -16,6 +16,7 @@ Repositório de conteúdo do @ocamissoes ("O Ecossistema de Inovação das Miss�
 - **Áudio:** só o que `scripts/audio.mjs` gera, ou arquivos com licença clara anotados em `conteudo/creditos.md`. Nunca música comercial.
 - **Imagens (carrossel):** regras em `.claude/skills/oca-carrossel/references/imagens.md`. Fonte real com licença livre para o que é histórico; IA só para ilustração no estilo da casa, marcada como tal; nunca rostos indígenas ou documentos gerados por IA. Toda imagem de terceiros entra em `conteudo/creditos.md`.
 - **Vídeo sem tremor:** grão fixo, sem traço vibrando na cena toda, brilhos lentos (ver `estilo.md`).
+- **Vídeo vivo, não slide:** câmera muda de plano a cada batida, nada de miniatura, pelo menos 6 coisas vivas por cena, e `node scripts/compara-fichas.mjs` sem alerta antes de entregar (ver `estilo.md`).
 - **Texto:** português do Brasil, sem travessões.
 - **Registro:** cada vídeo ou carrossel publicado ganha uma linha em `conteudo/videos.md` ou `conteudo/carrosseis.md`.
 

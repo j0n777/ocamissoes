@@ -13,7 +13,7 @@ A linha editorial: **a inovação sempre esteve aqui.** Cada conteúdo liga um s
   oca-shorts/biblioteca/  folhas prontas: personagens, poses, objetos, tecnologia, céus, planos
 brand/               logo, wordmarks vetorizados, paleta, fontes (OFL)
 references/          análise do Instagram, técnicas trazidas de outros projetos
-exemplos/            saídas modelo: vídeos (Plêiades → IA; erva-mate → rastreio, feito por ficha)
+exemplos/            saídas modelo: vídeos (Plêiades → IA; erva-mate → rastreio e prensa → IA, feitos por ficha)
                      e carrosséis (imprensa de 1700; telescópios das Missões)
 conteudo/            registro do que já foi produzido (evita repetir temas)
 ```
